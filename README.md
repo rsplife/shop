@@ -43,13 +43,13 @@
 
 ## 在线演示
 
-访问 [Gitee Pages 部署地址](https://your-username.gitee.io/your-repo-name) 查看在线演示。
+访问 [https://github.com/rsplife/shop/) 查看在线演示。
 
 ## 本地运行
 
 1. 克隆项目到本地：
 ```bash
-git clone https://gitee.com/your-username/your-repo-name.git
+git clone https://github.com/rsplife/shop/.git
 cd your-repo-name
 ```
 
@@ -73,11 +73,11 @@ php -S localhost:8080
 - 默认管理员账号：`admin` / `admin123`
 - 管理员后台支持商品管理、订单处理等功能
 
-## 部署到Gitee Pages
+## 部署到Git
 
-1. 在Gitee上创建新仓库
+1. 在Git上创建新仓库
 2. 将项目文件上传到仓库
-3. 在仓库设置中启用Gitee Pages服务
+3. 在仓库设置中启用Git 服务
 4. 选择部署分支（通常是master或main）
 5. 等待部署完成，访问生成的链接
 
@@ -95,10 +95,10 @@ MIT License
 
 ## 联系方式
 
-- 邮箱：support@digitalplanet.com
-- 电话：+86 123 4567 8901
-- Telegram：@DigitalPlanetSupport
+- 邮箱：aikanhao@gmail.com
+- 电话：+86 
+- Telegram：@
 
 ---
 
-© 2023 数字星球 版权所有
+© 2025 数字星球 版权所有
