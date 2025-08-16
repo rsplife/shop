@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>购物车 - 数字星球</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 购物车特定样式 */
+        .cart-section {
+            padding: 60px 0;
+            background-color: #f8f9fa;
+            min-height: 70vh;
+        }
+        
+        .cart-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+        }
+        
+        .cart-header {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr 0.5fr;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .cart-item {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr 0.5fr;
+            padding: 20px 0;
+            border-bottom: 1px solid #e0e0e0;
+            align-items: center;
+        }
+        
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-right: 15px;
+        }
+        
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .item-details h3 {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .item-details p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .item-quantity {
+            display: flex;
+            align-items: center;
+        }
+        
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .quantity-btn.minus {
+            border-radius: 5px 0 0 5px;
+        }
+        
+        .quantity-btn.plus {
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .quantity-input {
+            width: 40px;
+            height: 30px;
+            border: 1px solid #e0e0e0;
+            border-left: none;
+            border-right: none;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .item-price, .item-total {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .item-remove {
+            color: #e74c3c;
+            cursor: pointer;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        .cart-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .coupon-section {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .coupon-section h3 {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .coupon-form {
+            display: flex;
+        }
+        
+        .coupon-form input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px 0 0 5px;
+            font-size: 0.9rem;
+        }
+        
+        .coupon-form button {
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .order-summary {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .order-summary h3 {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #34495e;
+        }
+        
+        .summary-item.total {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #2c3e50;
+            padding-top: 10px;
+            margin-top: 10px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .checkout-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .checkout-btn:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+        
+        .continue-shopping {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .continue-shopping a {
+            color: #3498db;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .continue-shopping a i {
+            margin-right: 5px;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 50px 0;
+        }
+        
+        .empty-cart i {
+            font-size: 5rem;
+            color: #bdc3c7;
+            margin-bottom: 20px;
+        }
+        
+        .empty-cart h2 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .empty-cart p {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .cart-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .cart-header {
+                display: none;
+            }
+            
+            .cart-item {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                position: relative;
+                padding: 20px;
+            }
+            
+            .item-info {
+                margin-bottom: 10px;
+            }
+            
+            .item-quantity, .item-price, .item-total {
+                justify-content: flex-start;
+            }
+            
+            .item-remove {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+            }
+            
+            .item-price::before {
+                content: "单价: ";
+                font-weight: normal;
+                color: #7f8c8d;
+            }
+            
+            .item-total::before {
+                content: "小计: ";
+                font-weight: normal;
+                color: #7f8c8d;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>数字星球</h1>
+                <p>全球数字账号购买平台</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="#">产品分类</a></li>
+                    <li><a href="#">批发优惠</a></li>
+                    <li><a href="#">使用指南</a></li>
+                    <li><a href="news-detail.html">新闻</a></li>
+                    <li><a href="#">关于我们</a></li>
+                    <li><a href="payment.html">支付</a></li>
+                    <li><a href="login.html" class="btn-primary">登录/注册</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="cart-section">
+        <div class="container">
+            <h2 class="section-title">购物车</h2>
+            
+            <div id="cart-content">
+                <!-- 购物车内容将通过JavaScript动态生成 -->
+            </div>
+            
+            <div class="continue-shopping">
+                <a href="index.html"><i class="fas fa-arrow-left"></i> 继续购物</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>关于数字星球</h3>
+                    <p>数字星球是一家专注于提供全球各类数字账号和充值服务的第三方平台，致力于为全球用户提供高质量、可靠的数字账号。</p>
+                </div>
+                <div class="footer-links">
+                    <h3>快速链接</h3>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="#">产品分类</a></li>
+                        <li><a href="#">批发优惠</a></li>
+                        <li><a href="#">使用指南</a></li>
+                        <li><a href="#">关于我们</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>联系我们</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> support@digitalplanet.com</li>
+                        <li><i class="fas fa-phone"></i> +86 123 4567 8901</li>
+                        <li><i class="fab fa-telegram"></i> @DigitalPlanetSupport</li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>订阅优惠信息</h3>
+                    <p>订阅我们的电子邮件，获取最新优惠和产品信息</p>
+                    <form>
+                        <input type="email" placeholder="您的邮箱地址">
+                        <button type="submit" class="btn-primary">订阅</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 数字星球 版权所有</p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-weixin"></i></a>
+                    <a href="#"><i class="fab fa-weibo"></i></a>
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="images.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 模拟购物车数据
+            const cartItems = [
+                {
+                    id: 1,
+                    name: '谷歌邮箱（Gmail）账号',
+                    image: 'gmail-main.jpg',
+                    price: 15.00,
+                    quantity: 2,
+                    description: '随机IP注册，安全可靠'
+                },
+                {
+                    id: 2,
+                    name: '微软Outlook邮箱账号',
+                    image: 'outlook.jpg',
+                    price: 12.00,
+                    quantity: 1,
+                    description: '支持OneDrive云存储'
+                },
+                {
+                    id: 3,
+                    name: 'YouTube高级账号',
+                    image: 'youtube.jpg',
+                    price: 45.00,
+                    quantity: 1,
+                    description: '已验证的YouTube账号'
+                }
+            ];
+            
+            // 渲染购物车
+            renderCart(cartItems);
+            
+            // 监听购物车操作
+            setupCartListeners();
+        });
+        
+        function renderCart(items) {
+            const cartContent = document.getElementById('cart-content');
+            
+            if (items.length === 0) {
+                // 购物车为空
+                cartContent.innerHTML = `
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h2>您的购物车是空的</h2>
+                        <p>浏览我们的产品并添加一些商品到购物车</p>
+                        <a href="index.html" class="btn-primary">开始购物</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 计算总价和折扣
+            const subtotal = items.reduce((total, item) => total + (item.price * item.quantity), 0);
+            const discount = calculateDiscount(items, subtotal);
+            const shipping = subtotal > 100 ? 0 : 10;
+            const total = subtotal - discount + shipping;
+            
+            // 渲染购物车内容
+            cartContent.innerHTML = `
+                <div class="cart-container">
+                    <div class="cart-header">
+                        <div>商品</div>
+                        <div>单价</div>
+                        <div>数量</div>
+                        <div>小计</div>
+                        <div></div>
+                    </div>
+                    <div class="cart-items">
+                        ${items.map(item => `
+                            <div class="cart-item" data-id="${item.id}">
+                                <div class="item-info">
+                                    <div class="item-image">
+                                        <img src="${item.image}" alt="${item.name}">
+                                    </div>
+                                    <div class="item-details">
+                                        <h3>${item.name}</h3>
+                                        <p>${item.description}</p>
+                                    </div>
+                                </div>
+                                <div class="item-price">¥${item.price.toFixed(2)}</div>
+                                <div class="item-quantity">
+                                    <div class="quantity-btn minus">-</div>
+                                    <input type="text" class="quantity-input" value="${item.quantity}" readonly>
+                                    <div class="quantity-btn plus">+</div>
+                                </div>
+                                <div class="item-total">¥${(item.price * item.quantity).toFixed(2)}</div>
+                                <div class="item-remove"><i class="fas fa-trash-alt"></i></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="cart-summary">
+                    <div class="coupon-section">
+                        <h3>优惠券</h3>
+                        <div class="coupon-form">
+                            <input type="text" placeholder="输入优惠码">
+                            <button>应用</button>
+                        </div>
+                    </div>
+                    <div class="order-summary">
+                        <h3>订单摘要</h3>
+                        <div class="summary-item">
+                            <span>小计</span>
+                            <span>¥${subtotal.toFixed(2)}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>批发折扣</span>
+                            <span>-¥${discount.toFixed(2)}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>运费</span>
+                            <span>${shipping === 0 ? '免费' : '¥' + shipping.toFixed(2)}</span>
+                        </div>
+                        <div class="summary-item total">
+                            <span>总计</span>
+                            <span>¥${total.toFixed(2)}</span>
+                        </div>
+                        <button class="checkout-btn">结算</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function calculateDiscount(items, subtotal) {
+            // 计算批发折扣
+            // 简单规则：总数量5件以上8折，10件以上7折，20件以上6折
+            const totalQuantity = items.reduce((total, item) => total + item.quantity, 0);
+            
+            if (totalQuantity >= 20) {
+                return subtotal * 0.4; // 6折 = 40%折扣
+            } else if (totalQuantity >= 10) {
+                return subtotal * 0.3; // 7折 = 30%折扣
+            } else if (totalQuantity >= 5) {
+                return subtotal * 0.2; // 8折 = 20%折扣
+            }
+            
+            return 0;
+        }
+        
+        function setupCartListeners() {
+            // 延迟设置监听器，确保DOM已经渲染
+            setTimeout(() => {
+                // 增加数量按钮
+                const plusButtons = document.querySelectorAll('.quantity-btn.plus');
+                plusButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const item = this.closest('.cart-item');
+                        const input = item.querySelector('.quantity-input');
+                        const itemTotal = item.querySelector('.item-total');
+                        const itemPrice = parseFloat(item.querySelector('.item-price').textContent.replace('¥', ''));
+                        
+                        let quantity = parseInt(input.value);
+                        quantity++;
+                        input.value = quantity;
+                        
+                        // 更新小计
+                        itemTotal.textContent = `¥${(itemPrice * quantity).toFixed(2)}`;
+                        
+                        // 更新购物车总计
+                        updateCartTotals();
+                    });
+                });
+                
+                // 减少数量按钮
+                const minusButtons = document.querySelectorAll('.quantity-btn.minus');
+                minusButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const item = this.closest('.cart-item');
+                        const input = item.querySelector('.quantity-input');
+                        const itemTotal = item.querySelector('.item-total');
+                        const itemPrice = parseFloat(item.querySelector('.item-price').textContent.replace('¥', ''));
+                        
+                        let quantity = parseInt(input.value);
+                        if (quantity > 1) {
+                            quantity--;
+                            input.value = quantity;
+                            
+                            // 更新小计
+                            itemTotal.textContent = `¥${(itemPrice * quantity).toFixed(2)}`;
+                            
+                            // 更新购物车总计
+                            updateCartTotals();
+                        }
+                    });
+                });
+                
+                // 删除商品按钮
+                const removeButtons = document.querySelectorAll('.item-remove');
+                removeButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const item = this.closest('.cart-item');
+                        const itemId = item.getAttribute('data-id');
+                        
+                        // 动画效果
+                        item.style.transition = 'all 0.3s ease';
+                        item.style.opacity = '0';
+                        item.style.height = '0';
+                        item.style.overflow = 'hidden';
+                        
+                        setTimeout(() => {
+                            item.remove();
+                            
+                            // 检查购物车是否为空
+                            const remainingItems = document.querySelectorAll('.cart-item');
+                            if (remainingItems.length === 0) {
+                                // 重新渲染空购物车
+                                renderCart([]);
+                            } else {
+                                // 更新购物车总计
+                                updateCartTotals();
+                            }
+                        }, 300);
+                    });
+                });
+                
+                // 结算按钮
+                const checkoutBtn = document.querySelector('.checkout-btn');
+                if (checkoutBtn) {
+                    checkoutBtn.addEventListener('click', function() {
+                        alert('感谢您的购买！我们将处理您的订单。');
+                    });
+                }
+                
+                // 优惠券按钮
+                const couponBtn = document.querySelector('.coupon-form button');
+                if (couponBtn) {
+                    couponBtn.addEventListener('click', function() {
+                        const couponInput = document.querySelector('.coupon-form input');
+                        const couponCode = couponInput.value.trim();
+                        
+                        if (couponCode) {
+                            // 模拟优惠券验证
+                            if (couponCode === 'WELCOME10') {
+                                alert('优惠券应用成功！已获得10%折扣。');
+                                // 更新购物车总计（实际应用中应该重新计算）
+                                updateCartTotals(true);
+                            } else {
+                                alert('无效的优惠券代码。');
+                            }
+                        } else {
+                            alert('请输入优惠券代码。');
+                        }
+                    });
+                }
+            }, 100);
+        }
+        
+        function updateCartTotals(applyCoupon = false) {
+            // 重新计算购物车总计
+            const items = document.querySelectorAll('.cart-item');
+            let subtotal = 0;
+            let totalQuantity = 0;
+            
+            items.forEach(item => {
+                const price = parseFloat(item.querySelector('.item-price').textContent.replace('¥', ''));
+                const quantity = parseInt(item.querySelector('.quantity-input').value);
+                subtotal += price * quantity;
+                totalQuantity += quantity;
+            });
+            
+            // 计算折扣
+            let discount = 0;
+            if (totalQuantity >= 20) {
+                discount = subtotal * 0.4;
+            } else if (totalQuantity >= 10) {
+                discount = subtotal * 0.3;
+            } else if (totalQuantity >= 5) {
+                discount = subtotal * 0.2;
+            }
+            
+            // 应用优惠券折扣（如果有）
+            if (applyCoupon) {
+                discount += (subtotal - discount) * 0.1; // 额外10%折扣
+            }
+            
+            // 计算运费
+            const shipping = subtotal > 100 ? 0 : 10;
+            
+            // 计算总计
+            const total = subtotal - discount + shipping;
+            
+            // 更新DOM
+            const subtotalElement = document.querySelector('.summary-item:nth-child(1) span:last-child');
+            const discountElement = document.querySelector('.summary-item:nth-child(2) span:last-child');
+            const shippingElement = document.querySelector('.summary-item:nth-child(3) span:last-child');
+            const totalElement = document.querySelector('.summary-item.total span:last-child');
+            
+            if (subtotalElement) subtotalElement.textContent = `¥${subtotal.toFixed(2)}`;
+            if (discountElement) discountElement.textContent = `-¥${discount.toFixed(2)}`;
+            if (shippingElement) shippingElement.textContent = shipping === 0 ? '免费' : `¥${shipping.toFixed(2)}`;
+            if (totalElement) totalElement.textContent = `¥${total.toFixed(2)}`;
+        }
+    </script>
+</body>
+</html>

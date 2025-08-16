@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户注册 - 电子商务平台</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .register-container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            border-color: #4a90e2;
+            outline: none;
+            box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+        }
+        
+        .form-group .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .form-group.error input {
+            border-color: #e74c3c;
+        }
+        
+        .form-group.error .error-message {
+            display: block;
+        }
+        
+        .register-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .register-btn:hover {
+            background-color: #3a7bc8;
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 15px;
+        }
+        
+        .login-link a {
+            color: #4a90e2;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .password-requirements {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .password-requirements ul {
+            padding-left: 20px;
+            margin-top: 5px;
+        }
+        
+        .password-strength {
+            height: 5px;
+            margin-top: 10px;
+            border-radius: 3px;
+            background-color: #eee;
+        }
+        
+        .password-strength-meter {
+            height: 100%;
+            width: 0;
+            border-radius: 3px;
+            transition: width 0.3s, background-color 0.3s;
+        }
+        
+        .strength-weak {
+            background-color: #e74c3c;
+            width: 33%;
+        }
+        
+        .strength-medium {
+            background-color: #f39c12;
+            width: 66%;
+        }
+        
+        .strength-strong {
+            background-color: #27ae60;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>电子商务平台</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="product-detail.html">产品</a></li>
+                    <li><a href="news-detail.html">新闻</a></li>
+                    <li><a href="cart.html">购物车</a></li>
+                    <li><a href="login.html" class="active">登录/注册</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="register-container">
+            <h2 style="text-align: center; margin-bottom: 30px;">创建账户</h2>
+            
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" name="username" required>
+                    <div class="error-message">请输入有效的用户名</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">电子邮箱</label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="error-message">请输入有效的电子邮箱地址</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" name="password" required>
+                    <div class="password-strength">
+                        <div class="password-strength-meter" id="password-meter"></div>
+                    </div>
+                    <div class="password-requirements">
+                        密码要求：
+                        <ul>
+                            <li>至少8个字符</li>
+                            <li>包含大小写字母</li>
+                            <li>包含数字</li>
+                            <li>包含特殊字符</li>
+                        </ul>
+                    </div>
+                    <div class="error-message">密码不符合要求</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm-password">确认密码</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required>
+                    <div class="error-message">两次输入的密码不一致</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">手机号码</label>
+                    <input type="tel" id="phone" name="phone" required>
+                    <div class="error-message">请输入有效的手机号码</div>
+                </div>
+                
+                <button type="submit" class="register-btn">注册</button>
+                
+                <div class="login-link">
+                    已有账户？<a href="login.html">立即登录</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>关于我们</h3>
+                    <p>我们是一家专注于提供高质量产品的电子商务平台。</p>
+                </div>
+                <div class="footer-section">
+                    <h3>联系方式</h3>
+                    <p>电子邮件：info@example.com</p>
+                    <p>电话：+123 456 7890</p>
+                </div>
+                <div class="footer-section">
+                    <h3>关注我们</h3>
+                    <div class="social-icons">
+                        <a href="#">微博</a>
+                        <a href="#">微信</a>
+                        <a href="#">抖音</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 电子商务平台. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="images.js"></script>
+    <script src="image-generator.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const registerForm = document.getElementById('register-form');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirm-password');
+            const passwordMeter = document.getElementById('password-meter');
+            
+            // 密码强度检测
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                let strength = 0;
+                
+                // 检查长度
+                if (password.length >= 8) {
+                    strength += 1;
+                }
+                
+                // 检查大小写字母
+                if (/[a-z]/.test(password) && /[A-Z]/.test(password)) {
+                    strength += 1;
+                }
+                
+                // 检查数字
+                if (/[0-9]/.test(password)) {
+                    strength += 1;
+                }
+                
+                // 检查特殊字符
+                if (/[^a-zA-Z0-9]/.test(password)) {
+                    strength += 1;
+                }
+                
+                // 更新密码强度指示器
+                passwordMeter.className = 'password-strength-meter';
+                if (strength === 0) {
+                    passwordMeter.style.width = '0';
+                } else if (strength <= 2) {
+                    passwordMeter.classList.add('strength-weak');
+                } else if (strength === 3) {
+                    passwordMeter.classList.add('strength-medium');
+                } else {
+                    passwordMeter.classList.add('strength-strong');
+                }
+            });
+            
+            // 表单验证
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                let isValid = true;
+                
+                // 验证用户名
+                const username = document.getElementById('username').value;
+                if (username.length < 3) {
+                    document.getElementById('username').parentElement.classList.add('error');
+                    isValid = false;
+                } else {
+                    document.getElementById('username').parentElement.classList.remove('error');
+                }
+                
+                // 验证邮箱
+                const email = document.getElementById('email').value;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    document.getElementById('email').parentElement.classList.add('error');
+                    isValid = false;
+                } else {
+                    document.getElementById('email').parentElement.classList.remove('error');
+                }
+                
+                // 验证密码
+                const password = passwordInput.value;
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
+                if (!passwordRegex.test(password)) {
+                    passwordInput.parentElement.classList.add('error');
+                    isValid = false;
+                } else {
+                    passwordInput.parentElement.classList.remove('error');
+                }
+                
+                // 验证确认密码
+                const confirmPassword = confirmPasswordInput.value;
+                if (password !== confirmPassword) {
+                    confirmPasswordInput.parentElement.classList.add('error');
+                    isValid = false;
+                } else {
+                    confirmPasswordInput.parentElement.classList.remove('error');
+                }
+                
+                // 验证手机号码
+                const phone = document.getElementById('phone').value;
+                const phoneRegex = /^1[3-9]\d{9}$/; // 中国手机号格式
+                if (!phoneRegex.test(phone)) {
+                    document.getElementById('phone').parentElement.classList.add('error');
+                    isValid = false;
+                } else {
+                    document.getElementById('phone').parentElement.classList.remove('error');
+                }
+                
+                if (isValid) {
+                    // 模拟注册成功
+                    alert('注册成功！请登录您的账户。');
+                    window.location.href = 'login.html';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

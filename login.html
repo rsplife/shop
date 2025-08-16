@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录/注册 - 数字星球</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 登录/注册页面特定样式 */
+        .auth-section {
+            padding: 60px 0;
+            background-color: #f8f9fa;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .auth-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        
+        .auth-image {
+            flex: 1;
+            background-color: #3498db;
+            padding: 40px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .auth-image h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        
+        .auth-image p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .auth-benefits {
+            margin-top: 30px;
+        }
+        
+        .auth-benefits h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .benefit-item i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .auth-forms {
+            flex: 1;
+            padding: 40px;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .auth-tab {
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #7f8c8d;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .auth-tab.active {
+            color: #3498db;
+        }
+        
+        .auth-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #3498db;
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .form-group .input-with-icon {
+            position: relative;
+        }
+        
+        .form-group .input-with-icon input {
+            padding-right: 40px;
+        }
+        
+        .form-group .input-with-icon i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            cursor: pointer;
+        }
+        
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+        
+        .remember-me input {
+            margin-right: 8px;
+        }
+        
+        .forgot-password {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .auth-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .social-login {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .social-login p {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .social-login p::before,
+        .social-login p::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background-color: #e0e0e0;
+        }
+        
+        .social-login p::before {
+            left: 0;
+        }
+        
+        .social-login p::after {
+            right: 0;
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .social-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon.wechat {
+            background-color: #07C160;
+        }
+        
+        .social-icon.qq {
+            background-color: #12B7F5;
+        }
+        
+        .social-icon.weibo {
+            background-color: #E6162D;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .auth-container {
+                flex-direction: column;
+            }
+            
+            .auth-image {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>数字星球</h1>
+                <p>全球数字账号购买平台</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="#">产品分类</a></li>
+                    <li><a href="#">批发优惠</a></li>
+                    <li><a href="#">使用指南</a></li>
+                    <li><a href="#">关于我们</a></li>
+                    <li><a href="news-detail.html">新闻</a></li>
+                    <li><a href="payment.html">支付</a></li>
+                    <li><a href="login.html" class="btn-primary">登录/注册</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="auth-section">
+        <div class="container">
+            <div class="auth-container">
+                <div class="auth-image">
+                    <h2>欢迎来到数字星球</h2>
+                    <p>全球领先的数字账号交易平台，为您提供安全、便捷、高质量的数字账号服务。</p>
+                    
+                    <div class="auth-benefits">
+                        <h3>会员专享权益</h3>
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>独家会员价格，最高可享8折优惠</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>账号购买记录永久保存，方便管理</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>专属客服通道，优先处理问题</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>新品上架优先通知，抢先体验</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="auth-forms">
+                    <div class="auth-tabs">
+                        <div class="auth-tab active" data-tab="login">登录</div>
+                        <div class="auth-tab" data-tab="register">注册</div>
+                    </div>
+                    
+                    <div class="auth-form login-form active">
+                        <div class="form-group">
+                            <label for="login-email">邮箱</label>
+                            <input type="email" id="login-email" placeholder="请输入您的邮箱地址">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="login-password">密码</label>
+                            <div class="input-with-icon">
+                                <input type="password" id="login-password" placeholder="请输入您的密码">
+                                <i class="fas fa-eye-slash toggle-password"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-options">
+                            <div class="remember-me">
+                                <input type="checkbox" id="remember">
+                                <label for="remember">记住我</label>
+                            </div>
+                            <a href="#" class="forgot-password">忘记密码？</a>
+                        </div>
+                        
+                        <button class="auth-btn login-btn">登录</button>
+                        
+                        <div class="social-login">
+                            <p>或使用社交账号登录</p>
+                            <div class="social-icons">
+                                <a href="#" class="social-icon wechat"><i class="fab fa-weixin"></i></a>
+                                <a href="#" class="social-icon qq"><i class="fab fa-qq"></i></a>
+                                <a href="#" class="social-icon weibo"><i class="fab fa-weibo"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="auth-form register-form">
+                        <div class="form-group">
+                            <label for="register-name">用户名</label>
+                            <input type="text" id="register-name" placeholder="请输入您的用户名">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="register-email">邮箱</label>
+                            <input type="email" id="register-email" placeholder="请输入您的邮箱地址">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="register-password">密码</label>
+                            <div class="input-with-icon">
+                                <input type="password" id="register-password" placeholder="请设置您的密码">
+                                <i class="fas fa-eye-slash toggle-password"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="register-confirm-password">确认密码</label>
+                            <div class="input-with-icon">
+                                <input type="password" id="register-confirm-password" placeholder="请再次输入您的密码">
+                                <i class="fas fa-eye-slash toggle-password"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-options">
+                            <div class="remember-me">
+                                <input type="checkbox" id="agree-terms">
+                                <label for="agree-terms">我已阅读并同意<a href="#">服务条款</a>和<a href="#">隐私政策</a></label>
+                            </div>
+                        </div>
+                        
+                        <button class="auth-btn register-btn">注册</button>
+                        
+                        <div class="social-login">
+                            <p>或使用社交账号注册</p>
+                            <div class="social-icons">
+                                <a href="#" class="social-icon wechat"><i class="fab fa-weixin"></i></a>
+                                <a href="#" class="social-icon qq"><i class="fab fa-qq"></i></a>
+                                <a href="#" class="social-icon weibo"><i class="fab fa-weibo"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>关于数字星球</h3>
+                    <p>数字星球是一家专注于提供全球各类数字账号和充值服务的第三方平台，致力于为全球用户提供高质量、可靠的数字账号。</p>
+                </div>
+                <div class="footer-links">
+                    <h3>快速链接</h3>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="#">产品分类</a></li>
+                        <li><a href="#">批发优惠</a></li>
+                        <li><a href="#">使用指南</a></li>
+                        <li><a href="#">关于我们</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>联系我们</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> support@digitalplanet.com</li>
+                        <li><i class="fas fa-phone"></i> +86 123 4567 8901</li>
+                        <li><i class="fab fa-telegram"></i> @DigitalPlanetSupport</li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>订阅优惠信息</h3>
+                    <p>订阅我们的电子邮件，获取最新优惠和产品信息</p>
+                    <form>
+                        <input type="email" placeholder="您的邮箱地址">
+                        <button type="submit" class="btn-primary">订阅</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 数字星球 版权所有</p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-weixin"></i></a>
+                    <a href="#"><i class="fab fa-weibo"></i></a>
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="images.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 切换登录/注册表单
+            const authTabs = document.querySelectorAll('.auth-tab');
+            const authForms = document.querySelectorAll('.auth-form');
+            
+            authTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // 移除所有标签的active类
+                    authTabs.forEach(t => t.classList.remove('active'));
+                    
+                    // 为当前点击的标签添加active类
+                    this.classList.add('active');
+                    
+                    // 隐藏所有表单
+                    authForms.forEach(form => form.classList.remove('active'));
+                    
+                    // 显示对应的表单
+                    const tabName = this.getAttribute('data-tab');
+                    document.querySelector(`.${tabName}-form`).classList.add('active');
+                });
+            });
+            
+            // 切换密码可见性
+            const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+            
+            togglePasswordButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const passwordInput = this.previousElementSibling;
+                    
+                    // 切换密码字段类型
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        this.classList.remove('fa-eye-slash');
+                        this.classList.add('fa-eye');
+                    } else {
+                        passwordInput.type = 'password';
+                        this.classList.remove('fa-eye');
+                        this.classList.add('fa-eye-slash');
+                    }
+                });
+            });
+            
+            // 登录按钮点击事件
+            const loginBtn = document.querySelector('.login-btn');
+            
+            loginBtn.addEventListener('click', function() {
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                
+                if (!email || !password) {
+                    alert('请填写完整的登录信息');
+                    return;
+                }
+                
+                // 模拟登录成功
+                alert('登录成功！');
+                window.location.href = 'index.html';
+            });
+            
+            // 注册按钮点击事件
+            const registerBtn = document.querySelector('.register-btn');
+            
+            registerBtn.addEventListener('click', function() {
+                const username = document.getElementById('register-name').value;
+                const email = document.getElementById('register-email').value;
+                const password = document.getElementById('register-password').value;
+                const confirmPassword = document.getElementById('register-confirm-password').value;
+                const agreeTerms = document.getElementById('agree-terms').checked;
+                
+                if (!username || !email || !password || !confirmPassword) {
+                    alert('请填写完整的注册信息');
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    alert('两次输入的密码不一致');
+                    return;
+                }
+                
+                if (!agreeTerms) {
+                    alert('请阅读并同意服务条款和隐私政策');
+                    return;
+                }
+                
+                // 模拟注册成功
+                alert('注册成功！请登录您的账号。');
+                
+                // 切换到登录表单
+                authTabs[0].click();
+                
+                // 清空注册表单
+                document.getElementById('register-name').value = '';
+                document.getElementById('register-email').value = '';
+                document.getElementById('register-password').value = '';
+                document.getElementById('register-confirm-password').value = '';
+                document.getElementById('agree-terms').checked = false;
+            });
+        });
+    </script>
+</body>
+</html>

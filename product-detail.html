@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>谷歌邮箱（Gmail）账号 - 数字星球</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 产品详情页特定样式 */
+        .product-detail {
+            padding: 60px 0;
+            background-color: #f8f9fa;
+        }
+        
+        .product-detail-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+        }
+        
+        .product-gallery {
+            position: relative;
+        }
+        
+        .product-main-image {
+            width: 100%;
+            height: 350px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .product-main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .product-thumbnails {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .product-thumbnail {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .product-thumbnail.active {
+            border-color: #3498db;
+        }
+        
+        .product-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .product-info-detail h1 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .product-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .product-rating .stars {
+            color: #f39c12;
+            margin-right: 10px;
+        }
+        
+        .product-rating .review-count {
+            color: #7f8c8d;
+        }
+        
+        .product-price-detail {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .current-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #3498db;
+            margin-right: 15px;
+        }
+        
+        .old-price {
+            font-size: 1.2rem;
+            color: #95a5a6;
+            text-decoration: line-through;
+        }
+        
+        .product-discount {
+            display: inline-block;
+            background-color: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            margin-left: 15px;
+        }
+        
+        .product-description {
+            color: #34495e;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+        
+        .product-features {
+            margin-bottom: 25px;
+        }
+        
+        .product-features h3 {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .feature-list {
+            list-style: none;
+        }
+        
+        .feature-list li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-list li i {
+            color: #2ecc71;
+            margin-right: 10px;
+        }
+        
+        .product-actions {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        .quantity-btn {
+            width: 35px;
+            height: 35px;
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        
+        .quantity-btn.minus {
+            border-radius: 5px 0 0 5px;
+        }
+        
+        .quantity-btn.plus {
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .quantity-input {
+            width: 50px;
+            height: 35px;
+            border: 1px solid #e0e0e0;
+            border-left: none;
+            border-right: none;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        .add-to-cart-btn {
+            flex: 1;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+        }
+        
+        .product-meta {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .meta-item {
+            display: flex;
+            margin-bottom: 10px;
+            color: #7f8c8d;
+        }
+        
+        .meta-label {
+            font-weight: 600;
+            width: 120px;
+        }
+        
+        .product-share {
+            margin-top: 20px;
+        }
+        
+        .product-share span {
+            font-weight: 600;
+            margin-right: 15px;
+        }
+        
+        .share-icons a {
+            display: inline-flex;
+            width: 35px;
+            height: 35px;
+            background-color: #f8f9fa;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: #7f8c8d;
+            transition: all 0.3s ease;
+        }
+        
+        .share-icons a:hover {
+            background-color: #3498db;
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        /* 相关产品样式 */
+        .related-products {
+            padding: 60px 0;
+            background-color: white;
+        }
+        
+        /* 客户评价样式 */
+        .product-reviews {
+            padding: 60px 0;
+            background-color: #f8f9fa;
+        }
+        
+        .review-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .average-rating {
+            text-align: center;
+        }
+        
+        .average-rating .big-rating {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .average-rating .stars {
+            color: #f39c12;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .average-rating .total-reviews {
+            color: #7f8c8d;
+        }
+        
+        .rating-breakdown {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 30px;
+        }
+        
+        .rating-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .rating-level {
+            width: 60px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .rating-level i {
+            color: #f39c12;
+            margin-right: 5px;
+        }
+        
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #3498db;
+        }
+        
+        .rating-count {
+            width: 40px;
+            text-align: right;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .write-review-btn {
+            padding: 10px 20px;
+        }
+        
+        .review-list {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .review-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .reviewer-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+        }
+        
+        .reviewer-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .reviewer-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .review-date {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .review-rating .stars {
+            color: #f39c12;
+        }
+        
+        .review-content {
+            color: #34495e;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        
+        .review-images {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .review-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .review-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .review-actions {
+            display: flex;
+            align-items: center;
+            color: #7f8c8d;
+        }
+        
+        .review-actions button {
+            background: none;
+            border: none;
+            color: #7f8c8d;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        .review-actions button i {
+            margin-right: 5px;
+        }
+        
+        .review-actions button:hover {
+            color: #3498db;
+        }
+        
+        .load-more {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .product-detail-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>数字星球</h1>
+                <p>全球数字账号购买平台</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="#">产品分类</a></li>
+                    <li><a href="#">批发优惠</a></li>
+                    <li><a href="#">使用指南</a></li>
+                    <li><a href="#">关于我们</a></li>
+                    <li><a href="news-detail.html">新闻</a></li>
+                    <li><a href="payment.html">支付</a></li>
+                    <li><a href="login.html" class="btn-primary">登录/注册</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="product-detail">
+        <div class="container">
+            <div class="product-detail-container">
+                <div class="product-gallery">
+                    <div class="product-main-image">
+                        <img src="gmail-main.jpg" alt="Gmail账号详情" id="main-image">
+                    </div>
+                    <div class="product-thumbnails">
+                        <div class="product-thumbnail active" data-image="gmail-main.jpg">
+                            <img src="gmail-main.jpg" alt="Gmail账号缩略图1">
+                        </div>
+                        <div class="product-thumbnail" data-image="gmail-2.jpg">
+                            <img src="gmail-2.jpg" alt="Gmail账号缩略图2">
+                        </div>
+                        <div class="product-thumbnail" data-image="gmail-3.jpg">
+                            <img src="gmail-3.jpg" alt="Gmail账号缩略图3">
+                        </div>
+                        <div class="product-thumbnail" data-image="gmail-4.jpg">
+                            <img src="gmail-4.jpg" alt="Gmail账号缩略图4">
+                        </div>
+                    </div>
+                </div>
+                <div class="product-info-detail">
+                    <h1>谷歌邮箱（Gmail）账号</h1>
+                    <div class="product-rating">
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <div class="review-count">4.5 (128 评价)</div>
+                    </div>
+                    <div class="product-price-detail">
+                        <div class="current-price">¥15.00</div>
+                        <div class="old-price">¥20.00</div>
+                        <div class="product-discount">25% 优惠</div>
+                    </div>
+                    <div class="product-description">
+                        <p>高质量的Gmail账号，适合个人和企业批量操作。每个Gmail账号都在不同国家的IP地址上随机注册，确保账号安全。用户购买后可以修改密码、辅助邮箱等安全信息，长期稳定使用。</p>
+                    </div>
+                    <div class="product-features">
+                        <h3>产品特点</h3>
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check-circle"></i> 随机IP注册，安全可靠</li>
+                            <li><i class="fas fa-check-circle"></i> 支持修改密码和安全信息</li>
+                            <li><i class="fas fa-check-circle"></i> 15GB免费云存储空间</li>
+                            <li><i class="fas fa-check-circle"></i> 支持Google全系列服务</li>
+                            <li><i class="fas fa-check-circle"></i> 30天质保，问题免费更换</li>
+                        </ul>
+                    </div>
+                    <div class="product-actions">
+                        <div class="quantity-selector">
+                            <div class="quantity-btn minus">-</div>
+                            <input type="text" class="quantity-input" value="1" readonly>
+                            <div class="quantity-btn plus">+</div>
+                        </div>
+                        <button class="btn-primary add-to-cart-btn">添加到购物车</button>
+                    </div>
+                    <div class="product-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">产品编号:</div>
+                            <div class="meta-value">GM-20230915</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">类别:</div>
+                            <div class="meta-value">邮箱账号</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">库存状态:</div>
+                            <div class="meta-value">有货 (>100)</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">批发优惠:</div>
+                            <div class="meta-value">5件8折，10件7折，20件6折</div>
+                        </div>
+                        <div class="product-share">
+                            <span>分享:</span>
+                            <div class="share-icons">
+                                <a href="#"><i class="fab fa-weixin"></i></a>
+                                <a href="#"><i class="fab fa-weibo"></i></a>
+                                <a href="#"><i class="fab fa-qq"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="related-products">
+        <div class="container">
+            <h2 class="section-title">相关产品</h2>
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="outlook.jpg" alt="Outlook账号">
+                    </div>
+                    <div class="product-info">
+                        <h3>微软Outlook邮箱账号</h3>
+                        <p>高质量Outlook账号，支持OneDrive云存储</p>
+                        <div class="product-price">
+                            <span class="price">¥12.00</span>
+                            <span class="original-price">¥18.00</span>
+                        </div>
+                        <a href="#" class="btn-primary">立即购买</a>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="google-drive.jpg" alt="Google Drive账号">
+                    </div>
+                    <div class="product-info">
+                        <h3>Google Drive扩容账号</h3>
+                        <p>Google Drive 2TB容量账号，适合存储大文件</p>
+                        <div class="product-price">
+                            <span class="price">¥35.00</span>
+                            <span class="original-price">¥50.00</span>
+                        </div>
+                        <a href="#" class="btn-primary">立即购买</a>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="youtube.jpg" alt="YouTube账号">
+                    </div>
+                    <div class="product-info">
+                        <h3>YouTube高级账号</h3>
+                        <p>已验证的YouTube账号，适合内容创作者</p>
+                        <div class="product-price">
+                            <span class="price">¥45.00</span>
+                            <span class="original-price">¥60.00</span>
+                        </div>
+                        <a href="#" class="btn-primary">立即购买</a>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="protonmail.jpg" alt="ProtonMail账号">
+                    </div>
+                    <div class="product-info">
+                        <h3>ProtonMail加密邮箱</h3>
+                        <p>瑞士加密邮箱，注重隐私保护</p>
+                        <div class="product-price">
+                            <span class="price">¥28.00</span>
+                            <span class="original-price">¥40.00</span>
+                        </div>
+                        <a href="#" class="btn-primary">立即购买</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="product-reviews">
+        <div class="container">
+            <h2 class="section-title">客户评价</h2>
+            <div class="review-summary">
+                <div class="average-rating">
+                    <div class="big-rating">4.5</div>
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <div class="total-reviews">基于 128 条评价</div>
+                </div>
+                <div class="rating-breakdown">
+                    <div class="rating-bar">
+                        <div class="rating-level">
+                            <i class="fas fa-star"></i> 5
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 75%"></div>
+                        </div>
+                        <div class="rating-count">96</div>
+                    </div>
+                    <div class="rating-bar">
+                        <div class="rating-level">
+                            <i class="fas fa-star"></i> 4
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 15%"></div>
+                        </div>
+                        <div class="rating-count">19</div>
+                    </div>
+                    <div class="rating-bar">
+                        <div class="rating-level">
+                            <i class="fas fa-star"></i> 3
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 7%"></div>
+                        </div>
+                        <div class="rating-count">9</div>
+                    </div>
+                    <div class="rating-bar">
+                        <div class="rating-level">
+                            <i class="fas fa-star"></i> 2
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 2%"></div>
+                        </div>
+                        <div class="rating-count">3</div>
+                    </div>
+                    <div class="rating-bar">
+                        <div class="rating-level">
+                            <i class="fas fa-star"></i> 1
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 1%"></div>
+                        </div>
+                        <div class="rating-count">1</div>
+                    </div>
+                </div>
+                <a href="#" class="btn-primary write-review-btn">写评价</a>
+            </div>
+            <div class="review-list">
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">
+                                <img src="user1.jpg" alt="用户头像">
+                            </div>
+                            <div>
+                                <div class="reviewer-name">张先生</div>
+                                <div class="review-date">2023-09-15</div>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-content">
+                        <p>账号质量非常好，已经使用了三个月，没有任何问题。客服响应速度也很快，有问题都能及时解决。批量购买了10个账号用于公司业务，每个都能正常使用，非常满意。</p>
+                    </div>
+                    <div class="review-images">
+                        <div class="review-image">
+                            <img src="review-image1.jpg" alt="评价图片">
+                        </div>
+                        <div class="review-image">
+                            <img src="review-image2.jpg" alt="评价图片">
+                        </div>
+                    </div>
+                    <div class="review-actions">
+                        <button>
+                            <i class="fas fa-thumbs-up"></i> 有用 (15)
+                        </button>
+                        <button>
+                            <i class="fas fa-comment"></i> 回复
+                        </button>
+                    </div>
+                </div>
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">
+                                <img src="user2.jpg" alt="用户头像">
+                            </div>
+                            <div>
+                                <div class="reviewer-name">李女士</div>
+                                <div class="review-date">2023-09-10</div>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-content">
+                        <p>账号整体不错，能正常使用Google的各项服务。唯一的小问题是刚开始使用时需要验证一下，不过按照客服提供的教程操作后就没问题了。价格比其他平台便宜，性价比高。</p>
+                    </div>
+                    <div class="review-actions">
+                        <button>
+                            <i class="fas fa-thumbs-up"></i> 有用 (8)
+                        </button>
+                        <button>
+                            <i class="fas fa-comment"></i> 回复
+                        </button>
+                    </div>
+                </div>
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">
+                                <img src="user3.jpg" alt="用户头像">
+                            </div>
+                            <div>
+                                <div class="reviewer-name">王同学</div>
+                                <div class="review-date">2023-09-05</div>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-content">
+                        <p>作为学生，需要一个Gmail账号来使用一些国外的学术资源和工具，这个账号完全满足了我的需求。注册过程简单，客服也很耐心地解答了我的问题。推荐给有类似需求的同学。</p>
+                    </div>
+                    <div class="review-actions">
+                        <button>
+                            <i class="fas fa-thumbs-up"></i> 有用 (12)
+                        </button>
+                        <button>
+                            <i class="fas fa-comment"></i> 回复
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="load-more">
+                <a href="#" class="btn-secondary">加载更多评价</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>关于数字星球</h3>
+                    <p>数字星球是一家专注于提供全球各类数字账号和充值服务的第三方平台，致力于为全球用户提供高质量、可靠的数字账号。</p>
+                </div>
+                <div class="footer-links">
+                    <h3>快速链接</h3>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="#">产品分类</a></li>
+                        <li><a href="#">批发优惠</a></li>
+                        <li><a href="#">使用指南</a></li>
+                        <li><a href="#">关于我们</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>联系我们</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> support@digitalplanet.com</li>
+                        <li><i class="fas fa-phone"></i> +86 123 4567 8901</li>
+                        <li><i class="fab fa-telegram"></i> @DigitalPlanetSupport</li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>订阅优惠信息</h3>
+                    <p>订阅我们的电子邮件，获取最新优惠和产品信息</p>
+                    <form>
+                        <input type="email" placeholder="您的邮箱地址">
+                        <button type="submit" class="btn-primary">订阅</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 数字星球 版权所有</p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-weixin"></i></a>
+                    <a href="#"><i class="fab fa-weibo"></i></a>
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="images.js"></script>
+    <script>
+        // 产品详情页特定脚本
+        document.addEventListener('DOMContentLoaded', function() {
+            // 产品缩略图切换
+            const thumbnails = document.querySelectorAll('.product-thumbnail');
+            const mainImage = document.getElementById('main-image');
+            
+            thumbnails.forEach(thumbnail => {
+                thumbnail.addEventListener('click', function() {
+                    // 移除所有缩略图的active类
+                    thumbnails.forEach(thumb => thumb.classList.remove('active'));
+                    
+                    // 为当前点击的缩略图添加active类
+                    this.classList.add('active');
+                    
+                    // 更新主图
+                    const imageSrc = this.getAttribute('data-image');
+                    mainImage.src = imageSrc;
+                });
+            });
+            
+            // 数量选择器
+            const minusBtn = document.querySelector('.quantity-btn.minus');
+            const plusBtn = document.querySelector('.quantity-btn.plus');
+            const quantityInput = document.querySelector('.quantity-input');
+            
+            minusBtn.addEventListener('click', function() {
+                let quantity = parseInt(quantityInput.value);
+                if (quantity > 1) {
+                    quantity--;
+                    quantityInput.value = quantity;
+                }
+            });
+            
+            plusBtn.addEventListener('click', function() {
+                let quantity = parseInt(quantityInput.value);
+                quantity++;
+                quantityInput.value = quantity;
+            });
+            
+            // 添加到购物车
+            const addToCartBtn = document.querySelector('.add-to-cart-btn');
+            
+            addToCartBtn.addEventListener('click', function() {
+                const quantity = parseInt(quantityInput.value);
+                const productName = document.querySelector('.product-info-detail h1').textContent;
+                const productPrice = document.querySelector('.current-price').textContent;
+                
+                // 更新购物车数量
+                const cartCount = document.querySelector('.cart-count');
+                if (cartCount) {
+                    cartCount.textContent = parseInt(cartCount.textContent) + quantity;
+                }
+                
+                // 显示添加成功提示
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.innerHTML = `<p>已将 ${quantity} 个 ${productName} 添加到购物车</p>`;
+                document.body.appendChild(notification);
+                
+                // 添加通知样式
+                const notificationStyle = document.createElement('style');
+                notificationStyle.textContent = `
+                    .notification {
+                        position: fixed;
+                        bottom: 20px;
+                        right: 20px;
+                        background: #2ecc71;
+                        color: white;
+                        padding: 15px 25px;
+                        border-radius: 5px;
+                        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+                        z-index: 1000;
+                        animation: slideIn 0.3s ease, fadeOut 0.5s ease 2.5s forwards;
+                    }
+                    
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    
+                    @keyframes fadeOut {
+                        from { opacity: 1; }
+                        to { opacity: 0; }
+                    }
+                `;
+                
+                document.head.appendChild(notificationStyle);
+                
+                // 3秒后移除通知
+                setTimeout(() => {
+                    notification.remove();
+                    notificationStyle.remove();
+                }, 3000);
+            });
+        });
+    </script>
+</body>
+</html>

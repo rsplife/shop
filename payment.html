@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>支付处理 - 电子商务平台</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .payment-container {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 0;
+            display: flex;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .payment-steps {
+            width: 300px;
+            background-color: #f8f9fa;
+            padding: 30px;
+        }
+        
+        .payment-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+        
+        .payment-step.active {
+            opacity: 1;
+        }
+        
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #ddd;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .payment-step.active .step-number,
+        .payment-step.completed .step-number {
+            background-color: #4a90e2;
+        }
+        
+        .payment-step.completed .step-number::after {
+            content: '✓';
+        }
+        
+        .step-label {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .payment-content {
+            flex: 1;
+            padding: 40px;
+            background-color: #fff;
+        }
+        
+        .payment-section {
+            display: none;
+        }
+        
+        .payment-section.active {
+            display: block;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        
+        .order-summary {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .order-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .order-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-right: 15px;
+        }
+        
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .item-details {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .item-price {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+        
+        .payment-methods {
+            margin-top: 30px;
+        }
+        
+        .payment-method {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .payment-method:hover {
+            border-color: #4a90e2;
+        }
+        
+        .payment-method.selected {
+            border-color: #4a90e2;
+            background-color: #f0f7ff;
+        }
+        
+        .payment-method-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #4a90e2;
+        }
+        
+        .payment-method-details {
+            flex: 1;
+        }
+        
+        .payment-method-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .payment-method-description {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .payment-method-radio {
+            margin-left: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .card-icons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 25px;
+            border-radius: 4px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .card-icon.visa {
+            background-color: #1a1f71;
+            color: white;
+        }
+        
+        .card-icon.mastercard {
+            background-color: #eb001b;
+            color: white;
+        }
+        
+        .card-icon.amex {
+            background-color: #006fcf;
+            color: white;
+        }
+        
+        .card-icon.unionpay {
+            background-color: #e21836;
+            color: white;
+        }
+        
+        .payment-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .btn-back {
+            padding: 12px 25px;
+            background-color: #f0f0f0;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-back:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .btn-next {
+            padding: 12px 25px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-next:hover {
+            background-color: #3a7bc8;
+        }
+        
+        .payment-success {
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #27ae60;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            color: white;
+            font-size: 40px;
+        }
+        
+        .success-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #27ae60;
+        }
+        
+        .success-message {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .order-details {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #666;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .payment-container {
+                flex-direction: column;
+            }
+            
+            .payment-steps {
+                width: 100%;
+                padding: 20px;
+            }
+            
+            .payment-content {
+                padding: 20px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>电子商务平台</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="product-detail.html">产品</a></li>
+                    <li><a href="news-detail.html">新闻</a></li>
+                    <li><a href="cart.html">购物车</a></li>
+                    <li><a href="login.html">登录/注册</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="payment-container">
+                <div class="payment-steps">
+                    <div class="payment-step active" data-step="order-summary">
+                        <div class="step-number">1</div>
+                        <div class="step-label">订单确认</div>
+                    </div>
+                    <div class="payment-step" data-step="payment-method">
+                        <div class="step-number">2</div>
+                        <div class="step-label">支付方式</div>
+                    </div>
+                    <div class="payment-step" data-step="payment-details">
+                        <div class="step-number">3</div>
+                        <div class="step-label">支付详情</div>
+                    </div>
+                    <div class="payment-step" data-step="payment-confirmation">
+                        <div class="step-number">4</div>
+                        <div class="step-label">支付确认</div>
+                    </div>
+                </div>
+                
+                <div class="payment-content">
+                    <!-- 订单确认 -->
+                    <div class="payment-section active" id="order-summary">
+                        <h2 class="section-title">订单确认</h2>
+                        
+                        <div class="order-summary">
+                            <div class="order-item">
+                                <div class="item-image" id="product-image-1">
+                                    <!-- 图片将由JS生成 -->
+                                </div>
+                                <div class="item-details">
+                                    <div class="item-name">Gmail账号 - 高级版</div>
+                                    <div class="item-description">包含额外存储空间和高级功能</div>
+                                    <div class="item-price">¥99.00</div>
+                                </div>
+                            </div>
+                            
+                            <div class="order-total">
+                                <span>总计：</span>
+                                <span>¥99.00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-actions">
+                            <a href="cart.html" class="btn-back">返回购物车</a>
+                            <button class="btn-next" data-next="payment-method">选择支付方式</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 支付方式 -->
+                    <div class="payment-section" id="payment-method">
+                        <h2 class="section-title">选择支付方式</h2>
+                        
+                        <div class="payment-methods">
+                            <div class="payment-method" data-method="alipay">
+                                <div class="payment-method-icon">💰</div>
+                                <div class="payment-method-details">
+                                    <div class="payment-method-name">支付宝</div>
+                                    <div class="payment-method-description">使用支付宝扫码支付</div>
+                                </div>
+                                <input type="radio" name="payment-method" class="payment-method-radio" value="alipay">
+                            </div>
+                            
+                            <div class="payment-method" data-method="wechat">
+                                <div class="payment-method-icon">📱</div>
+                                <div class="payment-method-details">
+                                    <div class="payment-method-name">微信支付</div>
+                                    <div class="payment-method-description">使用微信扫码支付</div>
+                                </div>
+                                <input type="radio" name="payment-method" class="payment-method-radio" value="wechat">
+                            </div>
+                            
+                            <div class="payment-method" data-method="credit-card">
+                                <div class="payment-method-icon">💳</div>
+                                <div class="payment-method-details">
+                                    <div class="payment-method-name">信用卡支付</div>
+                                    <div class="payment-method-description">使用Visa、Mastercard、银联等信用卡支付</div>
+                                </div>
+                                <input type="radio" name="payment-method" class="payment-method-radio" value="credit-card">
+                            </div>
+                        </div>
+                        
+                        <div class="payment-actions">
+                            <button class="btn-back" data-prev="order-summary">返回订单确认</button>
+                            <button class="btn-next" data-next="payment-details" disabled>继续</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 支付详情 -->
+                    <div class="payment-section" id="payment-details">
+                        <h2 class="section-title">支付详情</h2>
+                        
+                        <!-- 信用卡支付表单 -->
+                        <div class="payment-form credit-card-form" style="display: none;">
+                            <div class="card-icons">
+                                <div class="card-icon visa">VISA</div>
+                                <div class="card-icon mastercard">MC</div>
+                                <div class="card-icon amex">AMEX</div>
+                                <div class="card-icon unionpay">UP</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="card-number">卡号</label>
+                                <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19">
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="card-expiry">有效期 (MM/YY)</label>
+                                    <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="card-cvv">安全码</label>
+                                    <input type="text" id="card-cvv" placeholder="CVV" maxlength="4">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="card-name">持卡人姓名</label>
+                                <input type="text" id="card-name" placeholder="持卡人姓名">
+                            </div>
+                        </div>
+                        
+                        <!-- 支付宝/微信支付二维码 -->
+                        <div class="qr-payment-form" style="display: none;">
+                            <p style="text-align: center; margin-bottom: 20px;">请使用<span class="payment-method-name-display">支付宝</span>扫描以下二维码完成支付</p>
+                            
+                            <div class="qr-code" id="payment-qr-code">
+                                二维码将在这里显示
+                            </div>
+                            
+                            <p style="text-align: center; margin-top: 20px;">支付金额: <strong>¥99.00</strong></p>
+                        </div>
+                        
+                        <div class="payment-actions">
+                            <button class="btn-back" data-prev="payment-method">返回支付方式</button>
+                            <button class="btn-next" data-next="payment-confirmation">确认支付</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 支付确认 -->
+                    <div class="payment-section" id="payment-confirmation">
+                        <div class="payment-success">
+                            <div class="success-icon">✓</div>
+                            <h2 class="success-title">支付成功！</h2>
+                            <p class="success-message">您的订单已经成功支付，我们将立即处理您的订单。</p>
+                            
+                            <div class="order-details">
+                                <h3 style="margin-top: 0; margin-bottom: 15px;">订单详情</h3>
+                                
+                                <div class="detail-row">
+                                    <span class="detail-label">订单编号：</span>
+                                    <span class="detail-value" id="order-number">ORD20230001</span>
+                                </div>
+                                
+                                <div class="detail-row">
+                                    <span class="detail-label">支付方式：</span>
+                                    <span class="detail-value" id="payment-method-display">信用卡</span>
+                                </div>
+                                
+                                <div class="detail-row">
+                                    <span class="detail-label">支付金额：</span>
+                                    <span class="detail-value">¥99.00</span>
+                                </div>
+                                
+                                <div class="detail-row">
+                                    <span class="detail-label">支付时间：</span>
+                                    <span class="detail-value" id="payment-time">2023-06-15 14:30:45</span>
+                                </div>
+                            </div>
+                            
+                            <p>我们已将订单确认邮件发送至您的邮箱，请注意查收。</p>
+                            
+                            <div style="margin-top: 30px;">
+                                <a href="index.html" class="btn-next">返回首页</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>关于我们</h3>
+                    <p>我们是一家专注于提供高质量产品的电子商务平台。</p>
+                </div>
+                <div class="footer-section">
+                    <h3>联系方式</h3>
+                    <p>电子邮件：info@example.com</p>
+                    <p>电话：+123 456 7890</p>
+                </div>
+                <div class="footer-section">
+                    <h3>关注我们</h3>
+                    <div class="social-icons">
+                        <a href="#">微博</a>
+                        <a href="#">微信</a>
+                        <a href="#">抖音</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 电子商务平台. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="images.js"></script>
+    <script src="image-generator.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 生成产品图片
+            const productImage = document.getElementById('product-image-1');
+            if (productImage) {
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('width', '100%');
+                svg.setAttribute('height', '100%');
+                svg.setAttribute('viewBox', '0 0 80 80');
+                svg.style.display = 'block';
+                
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('width', '80');
+                rect.setAttribute('height', '80');
+                rect.setAttribute('fill', '#3498db');
+                svg.appendChild(rect);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', '40');
+                text.setAttribute('y', '40');
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('dominant-baseline', 'middle');
+                text.setAttribute('fill', 'white');
+                text.setAttribute('font-family', 'Arial, sans-serif');
+                text.setAttribute('font-size', '16');
+                text.textContent = 'Gmail';
+                svg.appendChild(text);
+                
+                productImage.appendChild(svg);
+            }
+            
+            // 生成随机订单号
+            const orderNumber = document.getElementById('order-number');
+            if (orderNumber) {
+                const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                orderNumber.textContent = `ORD2023${randomNum}`;
+            }
+            
+            // 设置当前时间
+            const paymentTime = document.getElementById('payment-time');
+            if (paymentTime) {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = (now.getMonth() + 1).toString().padStart(2, '0');
+                const day = now.getDate().toString().padStart(2, '0');
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                
+                paymentTime.textContent = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            }
+            
+            // 支付方式选择
+            const paymentMethods = document.querySelectorAll('.payment-method');
+            const nextButton = document.querySelector('#payment-method .btn-next');
+            let selectedMethod = '';
+            
+            paymentMethods.forEach(method => {
+                method.addEventListener('click', function() {
+                    // 移除所有选中状态
+                    paymentMethods.forEach(m => m.classList.remove('selected'));
+                    
+                    // 设置当前选中状态
+                    this.classList.add('selected');
+                    
+                    // 选中对应的单选按钮
+                    const radio = this.querySelector('input[type="radio"]');
+                    radio.checked = true;
+                    
+                    // 启用下一步按钮
+                    nextButton.disabled = false;
+                    
+                    // 保存选中的支付方式
+                    selectedMethod = this.getAttribute('data-method');
+                });
+            });
+            
+            // 步骤导航
+            const nextButtons = document.querySelectorAll('.btn-next[data-next]');
+            const backButtons = document.querySelectorAll('.btn-back[data-prev]');
+            const steps = document.querySelectorAll('.payment-step');
+            const sections = document.querySelectorAll('.payment-section');
+            
+            nextButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const nextStep = this.getAttribute('data-next');
+                    
+                    // 如果是从支付方式到支付详情，根据选择的支付方式显示不同的表单
+                    if (nextStep === 'payment-details') {
+                        const creditCardForm = document.querySelector('.credit-card-form');
+                        const qrPaymentForm = document.querySelector('.qr-payment-form');
+                        const paymentMethodNameDisplay = document.querySelector('.payment-method-name-display');
+                        
+                        if (selectedMethod === 'credit-card') {
+                            creditCardForm.style.display = 'block';
+                            qrPaymentForm.style.display = 'none';
+                        } else {
+                            creditCardForm.style.display = 'none';
+                            qrPaymentForm.style.display = 'block';
+                            
+                            // 设置支付方式名称
+                            if (selectedMethod === 'alipay') {
+                                paymentMethodNameDisplay.textContent = '支付宝';
+                            } else if (selectedMethod === 'wechat') {
+                                paymentMethodNameDisplay.textContent = '微信';
+                            }
+                            
+                            // 生成二维码
+                            const qrCode = document.getElementById('payment-qr-code');
+                            qrCode.innerHTML = '';
+                            
+                            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                            svg.setAttribute('width', '100%');
+                            svg.setAttribute('height', '100%');
+                            svg.setAttribute('viewBox', '0 0 200 200');
+                            
+                            // 背景
+                            const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                            bg.setAttribute('width', '200');
+                            bg.setAttribute('height', '200');
+                            bg.setAttribute('fill', 'white');
+                            svg.appendChild(bg);
+                            
+                            // 简单的二维码图案
+                            for (let i = 0; i < 8; i++) {
+                                for (let j = 0; j < 8; j++) {
+                                    if (Math.random() > 0.5) {
+                                        const cell = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                                        cell.setAttribute('x', 20 + i * 20);
+                                        cell.setAttribute('y', 20 + j * 20);
+                                        cell.setAttribute('width', '20');
+                                        cell.setAttribute('height', '20');
+                                        cell.setAttribute('fill', 'black');
+                                        svg.appendChild(cell);
+                                    }
+                                }
+                            }
+                            
+                            // 添加定位图案
+                            const patterns = [
+                                [0, 0],
+                                [0, 7],
+                                [7, 0]
+                            ];
+                            
+                            patterns.forEach(([x, y]) => {
+                                // 外框
+                                const outer = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                                outer.setAttribute('x', 20 + x * 20);
+                                outer.setAttribute('y', 20 + y * 20);
+                                outer.setAttribute('width', '20');
+                                outer.setAttribute('height', '20');
+                                outer.setAttribute('fill', 'black');
+                                svg.appendChild(outer);
+                                
+                                // 内框
+                                const inner = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                                inner.setAttribute('x', 25 + x * 20);
+                                inner.setAttribute('y', 25 + y * 20);
+                                inner.setAttribute('width', '10');
+                                inner.setAttribute('height', '10');
+                                inner.setAttribute('fill', 'white');
+                                svg.appendChild(inner);
+                                
+                                // 中心点
+                                const center = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                                center.setAttribute('x', 28 + x * 20);
+                                center.setAttribute('y', 28 + y * 20);
+                                center.setAttribute('width', '4');
+                                center.setAttribute('height', '4');
+                                center.setAttribute('fill', 'black');
+                                svg.appendChild(center);
+                            });
+                            
+                            qrCode.appendChild(svg);
+                        }
+                        
+                        // 设置支付确认页面的支付方式显示
+                        const paymentMethodDisplay = document.getElementById('payment-method-display');
+                        if (selectedMethod === 'credit-card') {
+                            paymentMethodDisplay.textContent = '信用卡';
+                        } else if (selectedMethod === 'alipay') {
+                            paymentMethodDisplay.textContent = '支付宝';
+                        } else if (selectedMethod === 'wechat') {
+                            paymentMethodDisplay.textContent = '微信支付';
+                        }
+                    }
+                    
+                    // 隐藏所有部分
+                    sections.forEach(section => section.classList.remove('active'));
+                    
+                    // 显示目标部分
+                    document.getElementById(nextStep).classList.add('active');
+                    
+                    // 更新步骤状态
+                    steps.forEach(step => {
+                        if (step.getAttribute('data-step') === nextStep) {
+                            step.classList.add('active');
+                            
+                            // 将之前的步骤标记为已完成
+                            let prevStep = step.previousElementSibling;
+                            while (prevStep) {
+                                prevStep.classList.add('completed');
+                                prevStep = prevStep.previousElementSibling;
+                            }
+                        }
+                    });
+                });
+            });
+            
+            backButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const prevStep = this.getAttribute('data-prev');
+                    
+                    // 隐藏所有部分
+                    sections.forEach(section => section.classList.remove('active'));
+                    
+                    // 显示目标部分
+                    document.getElementById(prevStep).classList.add('active');
+                    
+                    // 更新步骤状态
+                    steps.forEach(step => {
+                        if (step.getAttribute('data-step') === prevStep) {
+                            step.classList.add('active');
+                            
+                            // 将之后的步骤标记为未完成
+                            let nextStep = step.nextElementSibling;
+                            while (nextStep) {
+                                nextStep.classList.remove('active');
+                                nextStep.classList.remove('completed');
+                                nextStep = nextStep.nextElementSibling;
+                            }
+                        }
+                    });
+                });
+            });
+            
+            // 信用卡输入格式化
+            const cardNumberInput = document.getElementById('card-number');
+            if (cardNumberInput) {
+                cardNumberInput.addEventListener('input', function(e) {
+                    // 移除非数字字符
+                    let value = this.value.replace(/\D/g, '');
+                    
+                    // 添加空格
+                    let formattedValue = '';
+                    for (let i = 0; i < value.length; i++) {
+                        if (i > 0 && i % 4 === 0) {
+                            formattedValue += ' ';
+                        }
+                        formattedValue += value[i];
+                    }
+                    
+                    this.value = formattedValue;
+                });
+            }
+            
+            const cardExpiryInput = document.getElementById('card-expiry');
+            if (cardExpiryInput) {
+                cardExpiryInput.addEventListener('input', function(e) {
+                    // 移除非数字字符
+                    let value = this.value.replace(/\D/g, '');
+                    
+                    // 添加斜杠
+                    if (value.length > 2) {
+                        value = value.substring(0, 2) + '/' + value.substring(2);
+                    }
+                    
+                    this.value = value;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
