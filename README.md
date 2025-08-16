@@ -43,13 +43,17 @@
 
 ## 在线演示
 
-访问 [https://github.com/rsplife/shop/) 查看在线演示。
+- **Cloudflare Pages**: [https://shop.pages.dev](https://shop.pages.dev)
+- **GitHub Pages**: [https://rsplife.github.io/shop](https://rsplife.github.io/shop)
+- **Gitee Pages**: [https://your-username.gitee.io/shop](https://your-username.gitee.io/shop)
+
+推荐使用Cloudflare Pages，享受全球CDN加速和无限带宽。
 
 ## 本地运行
 
 1. 克隆项目到本地：
 ```bash
-git clone https://github.com/rsplife/shop/.git
+git clone https://gitee.com/your-username/your-repo-name.git
 cd your-repo-name
 ```
 
@@ -73,13 +77,26 @@ php -S localhost:8080
 - 默认管理员账号：`admin` / `admin123`
 - 管理员后台支持商品管理、订单处理等功能
 
-## 部署到Git
+## 部署选项
 
-1. 在Git上创建新仓库
-2. 将项目文件上传到仓库
-3. 在仓库设置中启用Git 服务
-4. 选择部署分支（通常是master或main）
-5. 等待部署完成，访问生成的链接
+### Cloudflare Pages（推荐）
+
+- 全球CDN加速，访问速度极快
+- 无限带宽和请求
+- 自动HTTPS和DDoS防护
+- 详细步骤请参考：[CLOUDFLARE-DEPLOY.md](./CLOUDFLARE-DEPLOY.md)
+
+### Gitee Pages
+
+- 国内访问速度快
+- 免费静态网站托管
+- 详细步骤请参考：[DEPLOY.md](./DEPLOY.md)
+
+### 其他平台
+
+- **GitHub Pages**: 与GitHub仓库集成
+- **Netlify**: 强大的构建和部署功能
+- **Vercel**: 优秀的前端部署平台
 
 ## 浏览器支持
 
@@ -95,10 +112,10 @@ MIT License
 
 ## 联系方式
 
-- 邮箱：aikanhao@gmail.com
-- 电话：+86 
-- Telegram：@
+- 邮箱：support@digitalplanet.com
+- 电话：+86 123 4567 8901
+- Telegram：@DigitalPlanetSupport
 
 ---
 
-© 2025 数字星球 版权所有
+© 2023 数字星球 版权所有
