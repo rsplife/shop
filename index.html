@@ -17,13 +17,13 @@
             <nav>
                 <ul>
                     <li><a href="#">首页</a></li>
-                    <li><a href="#">产品分类</a></li>
-                    <li><a href="#">批发优惠</a></li>
-                    <li><a href="#">使用指南</a></li>
-                    <li><a href="#">关于我们</a></li>
+                    <li><a href="#products">产品分类</a></li>
+                    <li><a href="#wholesale">批发优惠</a></li>
+                    <li><a href="#guide">使用指南</a></li>
+                    <li><a href="#about">关于我们</a></li>
                     <li><a href="news-detail.html">新闻</a></li>
-                    <li><a href="payment.html">支付</a></li>
-                    <li><a href="login.html" class="btn-primary">登录/注册</a></li>
+                    <li><a href="cart.html"><i class="fas fa-shopping-cart"></i> 购物车</a></li>
+                    <li><a href="login.html" class="btn-primary"><i class="fas fa-user"></i> 快速登录</a></li>
                     <li><a href="admin-login.html" class="btn-secondary"><i class="fas fa-user-shield"></i> 管理员</a></li>
                 </ul>
             </nav>
@@ -36,8 +36,8 @@
                 <h2>一站式数字账号解决方案</h2>
                 <p>提供高质量、可靠的全球数字账号，满足个人用户、开发者、企业和团队的多样化需求</p>
                 <div class="hero-buttons">
-                    <a href="#" class="btn-primary">立即购买</a>
-                    <a href="#" class="btn-secondary">了解更多</a>
+                    <a href="#products" class="btn-primary">浏览产品</a>
+                    <a href="#about" class="btn-secondary">了解更多</a>
                 </div>
             </div>
             <div class="hero-image">
@@ -74,7 +74,7 @@
         </div>
     </section>
 
-    <section class="products">
+    <section class="products" id="products">
         <div class="container">
             <h2 class="section-title">热门产品</h2>
             <div class="product-grid">
@@ -89,7 +89,7 @@
                             <span class="price">¥15.00</span>
                             <span class="original-price">¥20.00</span>
                         </div>
-                        <a href="#" class="btn-primary">立即购买</a>
+                        <a href="product-detail.html" class="btn-primary">查看详情</a>
                     </div>
                 </div>
                 <div class="product-card">
@@ -103,7 +103,7 @@
                             <span class="price">¥25.00</span>
                             <span class="original-price">¥35.00</span>
                         </div>
-                        <a href="#" class="btn-primary">立即购买</a>
+                        <a href="product-detail.html" class="btn-primary">查看详情</a>
                     </div>
                 </div>
                 <div class="product-card">
@@ -117,7 +117,7 @@
                             <span class="price">¥18.00</span>
                             <span class="original-price">¥25.00</span>
                         </div>
-                        <a href="#" class="btn-primary">立即购买</a>
+                        <a href="product-detail.html" class="btn-primary">查看详情</a>
                     </div>
                 </div>
                 <div class="product-card">
@@ -131,7 +131,7 @@
                             <span class="price">¥22.00</span>
                             <span class="original-price">¥30.00</span>
                         </div>
-                        <a href="#" class="btn-primary">立即购买</a>
+                        <a href="product-detail.html" class="btn-primary">查看详情</a>
                     </div>
                 </div>
             </div>
@@ -173,7 +173,7 @@
         </div>
     </section>
 
-    <section class="discount">
+    <section class="discount" id="wholesale">
         <div class="container">
             <div class="discount-content">
                 <h2>批量采购优惠</h2>
@@ -183,7 +183,7 @@
         </div>
     </section>
 
-    <section class="guide">
+    <section class="guide" id="guide">
         <div class="container">
             <h2 class="section-title">使用指南</h2>
             <div class="guide-steps">
@@ -334,7 +334,7 @@
         </div>
     </section>
 
-    <footer>
+    <footer id="about">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-about">
@@ -383,5 +383,6 @@
     <script src="script.js"></script>
     <script src="images.js"></script>
     <script src="image-generator.js"></script>
+    <script src="api.js"></script>
 </body>
 </html>

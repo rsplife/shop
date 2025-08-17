@@ -239,6 +239,18 @@
             transition: all 0.3s ease;
         }
         
+        .social-icon.google {
+            background-color: #DB4437;
+        }
+        
+        .social-icon.apple {
+            background-color: #000000;
+        }
+        
+        .social-icon.github {
+            background-color: #333333;
+        }
+        
         .social-icon.wechat {
             background-color: #07C160;
         }
@@ -247,8 +259,8 @@
             background-color: #12B7F5;
         }
         
-        .social-icon.weibo {
-            background-color: #E6162D;
+        .social-icon.telegram {
+            background-color: #0088CC;
         }
         
         .social-icon:hover {
@@ -278,13 +290,13 @@
             <nav>
                 <ul>
                     <li><a href="index.html">首页</a></li>
-                    <li><a href="#">产品分类</a></li>
-                    <li><a href="#">批发优惠</a></li>
-                    <li><a href="#">使用指南</a></li>
-                    <li><a href="#">关于我们</a></li>
+                    <li><a href="index.html#products">产品分类</a></li>
+                    <li><a href="index.html#wholesale">批发优惠</a></li>
+                    <li><a href="index.html#guide">使用指南</a></li>
+                    <li><a href="index.html#about">关于我们</a></li>
                     <li><a href="news-detail.html">新闻</a></li>
-                    <li><a href="payment.html">支付</a></li>
-                    <li><a href="login.html" class="btn-primary">登录/注册</a></li>
+                    <li><a href="#" class="btn-secondary">购物车</a></li>
+                    <li><a href="login.html" class="btn-primary">快速登录</a></li>
                 </ul>
             </nav>
         </div>
@@ -349,11 +361,14 @@
                         <button class="auth-btn login-btn">登录</button>
                         
                         <div class="social-login">
-                            <p>或使用社交账号登录</p>
+                            <p>快捷登录</p>
                             <div class="social-icons">
-                                <a href="#" class="social-icon wechat"><i class="fab fa-weixin"></i></a>
-                                <a href="#" class="social-icon qq"><i class="fab fa-qq"></i></a>
-                                <a href="#" class="social-icon weibo"><i class="fab fa-weibo"></i></a>
+                                <a href="#" class="social-icon google" title="Google登录"><i class="fab fa-google"></i></a>
+                                <a href="#" class="social-icon apple" title="Apple ID登录"><i class="fab fa-apple"></i></a>
+                                <a href="#" class="social-icon github" title="GitHub登录"><i class="fab fa-github"></i></a>
+                                <a href="#" class="social-icon wechat" title="微信登录"><i class="fab fa-weixin"></i></a>
+                                <a href="#" class="social-icon qq" title="QQ登录"><i class="fab fa-qq"></i></a>
+                                <a href="#" class="social-icon telegram" title="Telegram登录"><i class="fab fa-telegram"></i></a>
                             </div>
                         </div>
                     </div>
@@ -395,11 +410,14 @@
                         <button class="auth-btn register-btn">注册</button>
                         
                         <div class="social-login">
-                            <p>或使用社交账号注册</p>
+                            <p>快捷注册</p>
                             <div class="social-icons">
-                                <a href="#" class="social-icon wechat"><i class="fab fa-weixin"></i></a>
-                                <a href="#" class="social-icon qq"><i class="fab fa-qq"></i></a>
-                                <a href="#" class="social-icon weibo"><i class="fab fa-weibo"></i></a>
+                                <a href="#" class="social-icon google" title="Google注册"><i class="fab fa-google"></i></a>
+                                <a href="#" class="social-icon apple" title="Apple ID注册"><i class="fab fa-apple"></i></a>
+                                <a href="#" class="social-icon github" title="GitHub注册"><i class="fab fa-github"></i></a>
+                                <a href="#" class="social-icon wechat" title="微信注册"><i class="fab fa-weixin"></i></a>
+                                <a href="#" class="social-icon qq" title="QQ注册"><i class="fab fa-qq"></i></a>
+                                <a href="#" class="social-icon telegram" title="Telegram注册"><i class="fab fa-telegram"></i></a>
                             </div>
                         </div>
                     </div>
@@ -456,6 +474,7 @@
 
     <script src="script.js"></script>
     <script src="images.js"></script>
+    <script src="api.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // 切换登录/注册表单
@@ -502,24 +521,39 @@
             // 登录按钮点击事件
             const loginBtn = document.querySelector('.login-btn');
             
-            loginBtn.addEventListener('click', function() {
+            loginBtn.addEventListener('click', async function() {
                 const email = document.getElementById('login-email').value;
                 const password = document.getElementById('login-password').value;
+                const rememberMe = document.getElementById('remember').checked;
                 
                 if (!email || !password) {
                     alert('请填写完整的登录信息');
                     return;
                 }
                 
-                // 模拟登录成功
-                alert('登录成功！');
-                window.location.href = 'index.html';
+                try {
+                    // 显示加载状态
+                    this.textContent = '登录中...';
+                    this.disabled = true;
+                    
+                    // 调用登录API
+                    const result = await AuthAPI.login(email, password, rememberMe);
+                    
+                    alert('登录成功！');
+                    window.location.href = 'index.html';
+                } catch (error) {
+                    alert('登录失败: ' + error.message);
+                } finally {
+                    // 恢复按钮状态
+                    this.textContent = '登录';
+                    this.disabled = false;
+                }
             });
             
             // 注册按钮点击事件
             const registerBtn = document.querySelector('.register-btn');
             
-            registerBtn.addEventListener('click', function() {
+            registerBtn.addEventListener('click', async function() {
                 const username = document.getElementById('register-name').value;
                 const email = document.getElementById('register-email').value;
                 const password = document.getElementById('register-password').value;
@@ -541,18 +575,49 @@
                     return;
                 }
                 
-                // 模拟注册成功
-                alert('注册成功！请登录您的账号。');
-                
-                // 切换到登录表单
-                authTabs[0].click();
-                
-                // 清空注册表单
-                document.getElementById('register-name').value = '';
-                document.getElementById('register-email').value = '';
-                document.getElementById('register-password').value = '';
-                document.getElementById('register-confirm-password').value = '';
-                document.getElementById('agree-terms').checked = false;
+                try {
+                    // 显示加载状态
+                    this.textContent = '注册中...';
+                    this.disabled = true;
+                    
+                    // 调用注册API
+                    const result = await AuthAPI.register(username, email, password);
+                    
+                    alert('注册成功！请登录您的账号。');
+                    
+                    // 切换到登录表单
+                    authTabs[0].click();
+                    
+                    // 清空注册表单
+                    document.getElementById('register-name').value = '';
+                    document.getElementById('register-email').value = '';
+                    document.getElementById('register-password').value = '';
+                    document.getElementById('register-confirm-password').value = '';
+                    document.getElementById('agree-terms').checked = false;
+                } catch (error) {
+                    alert('注册失败: ' + error.message);
+                } finally {
+                    // 恢复按钮状态
+                    this.textContent = '注册';
+                    this.disabled = false;
+                }
+            });
+            
+            // 社交登录点击事件
+            const socialIcons = document.querySelectorAll('.social-icon');
+            
+            socialIcons.forEach(icon => {
+                icon.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const provider = this.classList[1]; // 获取社交平台类名
+                    
+                    try {
+                        AuthAPI.socialLogin(provider);
+                    } catch (error) {
+                        alert('社交登录失败: ' + error.message);
+                    }
+                });
             });
         });
     </script>
