@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>邮箱验证 - 数字星球</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .verify-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .verify-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .verify-icon {
+            font-size: 64px;
+            color: #667eea;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .verify-title {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .verify-message {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .email-display {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            font-weight: 600;
+            color: #495057;
+            word-break: break-all;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #e9ecef;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: 500;
+            display: none;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading-spinner {
+            display: none;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .countdown {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+
+        .back-link {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .back-link a:hover {
+            color: #764ba2;
+        }
+
+        @media (max-width: 480px) {
+            .verify-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+
+            .verify-title {
+                font-size: 24px;
+            }
+
+            .verify-message {
+                font-size: 14px;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="verify-container">
+        <div id="verifyingState">
+            <i class="fas fa-envelope-open-text verify-icon"></i>
+            <h1 class="verify-title">正在验证邮箱...</h1>
+            <div class="loading-spinner" style="display: block;">
+                <div class="spinner"></div>
+            </div>
+            <p class="verify-message">请稍候，我们正在验证您的邮箱地址。</p>
+        </div>
+
+        <div id="successState" style="display: none;">
+            <i class="fas fa-check-circle verify-icon" style="color: #28a745;"></i>
+            <h1 class="verify-title">邮箱验证成功！</h1>
+            <p class="verify-message">
+                恭喜您！您的邮箱已成功验证。<br>
+                现在您可以享受数字星球的所有功能了。
+            </p>
+            <div class="action-buttons">
+                <a href="login.html" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    立即登录
+                </a>
+                <a href="index.html" class="btn btn-secondary">
+                    <i class="fas fa-home"></i>
+                    返回首页
+                </a>
+            </div>
+        </div>
+
+        <div id="errorState" style="display: none;">
+            <i class="fas fa-exclamation-triangle verify-icon" style="color: #dc3545;"></i>
+            <h1 class="verify-title">验证失败</h1>
+            <p class="verify-message" id="errorMessage">
+                很抱歉，邮箱验证失败。可能是验证链接已过期或无效。
+            </p>
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="resendVerification()" id="resendBtn">
+                    <i class="fas fa-paper-plane"></i>
+                    重新发送验证邮件
+                </button>
+                <a href="register.html" class="btn btn-secondary">
+                    <i class="fas fa-user-plus"></i>
+                    重新注册
+                </a>
+            </div>
+            <div class="countdown" id="resendCountdown" style="display: none;"></div>
+        </div>
+
+        <div id="pendingState" style="display: none;">
+            <i class="fas fa-envelope verify-icon"></i>
+            <h1 class="verify-title">请验证您的邮箱</h1>
+            <p class="verify-message">
+                我们已向您的邮箱发送了一封验证邮件，请点击邮件中的链接完成验证。
+            </p>
+            <div class="email-display" id="emailDisplay"></div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="resendVerification()" id="resendBtnPending">
+                    <i class="fas fa-paper-plane"></i>
+                    重新发送验证邮件
+                </button>
+                <a href="login.html" class="btn btn-secondary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    已验证？立即登录
+                </a>
+            </div>
+            <div class="countdown" id="resendCountdownPending" style="display: none;"></div>
+        </div>
+
+        <div class="status-message" id="statusMessage"></div>
+
+        <div class="back-link">
+            <a href="index.html">
+                <i class="fas fa-arrow-left"></i>
+                返回首页
+            </a>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="api.js"></script>
+    <script>
+        let resendCooldown = 60; // 重发冷却时间（秒）
+        let countdownTimer = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            const email = urlParams.get('email');
+            const action = urlParams.get('action');
+
+            if (action === 'pending' && email) {
+                // 显示等待验证状态
+                showPendingState(email);
+            } else if (token) {
+                // 执行邮箱验证
+                verifyEmail(token);
+            } else {
+                // 无效的访问
+                showErrorState('无效的验证链接');
+            }
+        });
+
+        // 执行邮箱验证
+        async function verifyEmail(token) {
+            try {
+                showVerifyingState();
+                
+                const response = await AuthAPI.verifyEmail(token);
+                
+                if (response.success) {
+                    showSuccessState();
+                } else {
+                    showErrorState(response.message || '验证失败');
+                }
+            } catch (error) {
+                console.error('邮箱验证失败:', error);
+                showErrorState(error.message || '验证过程中发生错误');
+            }
+        }
+
+        // 重新发送验证邮件
+        async function resendVerification() {
+            const email = getEmailFromUrl() || prompt('请输入您的邮箱地址:');
+            
+            if (!email) {
+                showStatusMessage('请输入有效的邮箱地址', 'error');
+                return;
+            }
+
+            try {
+                disableResendButton();
+                showStatusMessage('正在发送验证邮件...', 'info');
+                
+                const response = await AuthAPI.resendVerification(email);
+                
+                if (response.success) {
+                    showStatusMessage('验证邮件已发送，请检查您的邮箱', 'success');
+                    startResendCooldown();
+                } else {
+                    showStatusMessage(response.message || '发送失败，请重试', 'error');
+                    enableResendButton();
+                }
+            } catch (error) {
+                console.error('重发验证邮件失败:', error);
+                showStatusMessage(error.message || '发送失败，请重试', 'error');
+                enableResendButton();
+            }
+        }
+
+        // 显示验证中状态
+        function showVerifyingState() {
+            hideAllStates();
+            document.getElementById('verifyingState').style.display = 'block';
+        }
+
+        // 显示成功状态
+        function showSuccessState() {
+            hideAllStates();
+            document.getElementById('successState').style.display = 'block';
+        }
+
+        // 显示错误状态
+        function showErrorState(message) {
+            hideAllStates();
+            document.getElementById('errorState').style.display = 'block';
+            document.getElementById('errorMessage').textContent = message;
+        }
+
+        // 显示等待验证状态
+        function showPendingState(email) {
+            hideAllStates();
+            document.getElementById('pendingState').style.display = 'block';
+            document.getElementById('emailDisplay').textContent = email;
+        }
+
+        // 隐藏所有状态
+        function hideAllStates() {
+            const states = ['verifyingState', 'successState', 'errorState', 'pendingState'];
+            states.forEach(state => {
+                document.getElementById(state).style.display = 'none';
+            });
+        }
+
+        // 显示状态消息
+        function showStatusMessage(message, type) {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.textContent = message;
+            statusElement.className = `status-message status-${type}`;
+            statusElement.style.display = 'block';
+            
+            // 3秒后自动隐藏
+            setTimeout(() => {
+                statusElement.style.display = 'none';
+            }, 3000);
+        }
+
+        // 禁用重发按钮
+        function disableResendButton() {
+            const buttons = ['resendBtn', 'resendBtnPending'];
+            buttons.forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 发送中...';
+                }
+            });
+        }
+
+        // 启用重发按钮
+        function enableResendButton() {
+            const buttons = ['resendBtn', 'resendBtnPending'];
+            buttons.forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> 重新发送验证邮件';
+                }
+            });
+        }
+
+        // 开始重发冷却
+        function startResendCooldown() {
+            let countdown = resendCooldown;
+            const countdownElements = ['resendCountdown', 'resendCountdownPending'];
+            
+            // 显示倒计时
+            countdownElements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.style.display = 'block';
+                }
+            });
+            
+            countdownTimer = setInterval(() => {
+                countdownElements.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.textContent = `${countdown}秒后可重新发送`;
+                    }
+                });
+                
+                countdown--;
+                
+                if (countdown < 0) {
+                    clearInterval(countdownTimer);
+                    countdownElements.forEach(id => {
+                        const element = document.getElementById(id);
+                        if (element) {
+                            element.style.display = 'none';
+                        }
+                    });
+                    enableResendButton();
+                }
+            }, 1000);
+        }
+
+        // 从URL获取邮箱
+        function getEmailFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('email');
+        }
+    </script>
+</body>
+</html>

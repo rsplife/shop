@@ -194,6 +194,38 @@
             overflow: hidden;
         }
         
+        .news-image-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 16px;
+            margin: 20px 0;
+        }
+        
+        .news-image-placeholder::before {
+            content: "图片加载中...";
+        }
+        
+        .related-news-img-placeholder {
+            width: 100%;
+            height: 180px;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .related-news-img-placeholder::before {
+            content: "图片加载中...";
+        }
+        
         @media (max-width: 768px) {
             .news-title {
                 font-size: 26px;
@@ -448,8 +480,8 @@
                 </div>
                 <div class="footer-section">
                     <h3>联系我们</h3>
-                    <p>电子邮件：info@example.com</p>
-                    <p>电话：+86 123 4567 8910</p>
+                    <p>电子邮件：aikanhao@gmail.com</p>
+                    <p>电话：+86 00000000000</p>
                     <p>地址：中国上海市浦东新区张江高科技园区</p>
                 </div>
                 <div class="footer-section">
@@ -467,6 +499,8 @@
         </div>
     </footer>
 
+    <script src="config.js"></script>
+    <script src="api.js"></script>
     <script src="script.js"></script>
     <script src="images.js"></script>
     <script src="image-generator.js"></script>
@@ -474,9 +508,31 @@
         // 分享按钮功能
         document.addEventListener('DOMContentLoaded', function() {
             const shareButtons = document.querySelectorAll('.share-button');
-            shareButtons.forEach(button => {
+            shareButtons.forEach((button, index) => {
                 button.addEventListener('click', function() {
-                    alert('分享功能即将上线！');
+                    const platforms = ['Facebook', 'Twitter', '邮件', '微信'];
+                    const currentUrl = window.location.href;
+                    const title = document.querySelector('.news-title').textContent;
+                    
+                    switch(index) {
+                        case 0: // Facebook
+                            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`, '_blank');
+                            break;
+                        case 1: // Twitter
+                            window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(title)}`, '_blank');
+                            break;
+                        case 2: // 邮件
+                            window.location.href = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent('推荐阅读：' + title + '\n\n' + currentUrl)}`;
+                            break;
+                        case 3: // 微信
+                            // 复制链接到剪贴板
+                            navigator.clipboard.writeText(currentUrl).then(() => {
+                                alert('链接已复制到剪贴板，您可以在微信中粘贴分享！');
+                            }).catch(() => {
+                                alert('请手动复制链接进行分享：' + currentUrl);
+                            });
+                            break;
+                    }
                 });
             });
         });

@@ -374,9 +374,10 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
-    <script src="images.js"></script>
-    <script src="api.js"></script>
+    <script src="config.js"></script>
+<script src="script.js"></script>
+<script src="images.js"></script>
+<script src="api.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // 模拟购物车数据
@@ -599,7 +600,15 @@
                 const checkoutBtn = document.querySelector('.checkout-btn');
                 if (checkoutBtn) {
                     checkoutBtn.addEventListener('click', function() {
-                        alert('感谢您的购买！我们将处理您的订单。');
+                        // 检查购物车是否为空
+                        const cartItems = document.querySelectorAll('.cart-item');
+                        if (cartItems.length === 0) {
+                            alert('购物车为空，请先添加商品');
+                            return;
+                        }
+                        
+                        // 跳转到支付页面
+                        window.location.href = 'payment.html';
                     });
                 }
                 

@@ -363,12 +363,12 @@
                         <div class="social-login">
                             <p>快捷登录</p>
                             <div class="social-icons">
-                                <a href="#" class="social-icon google" title="Google登录"><i class="fab fa-google"></i></a>
-                                <a href="#" class="social-icon apple" title="Apple ID登录"><i class="fab fa-apple"></i></a>
-                                <a href="#" class="social-icon github" title="GitHub登录"><i class="fab fa-github"></i></a>
-                                <a href="#" class="social-icon wechat" title="微信登录"><i class="fab fa-weixin"></i></a>
-                                <a href="#" class="social-icon qq" title="QQ登录"><i class="fab fa-qq"></i></a>
-                                <a href="#" class="social-icon telegram" title="Telegram登录"><i class="fab fa-telegram"></i></a>
+                                <a href="#" class="social-icon google" title="Google登录" onclick="handleSocialLogin('google')"><i class="fab fa-google"></i></a>
+                                <a href="#" class="social-icon apple" title="Apple ID登录" onclick="handleSocialLogin('apple')"><i class="fab fa-apple"></i></a>
+                                <a href="#" class="social-icon github" title="GitHub登录" onclick="handleSocialLogin('github')"><i class="fab fa-github"></i></a>
+                                <a href="#" class="social-icon wechat" title="微信登录" onclick="handleSocialLogin('wechat')"><i class="fab fa-weixin"></i></a>
+                                <a href="#" class="social-icon qq" title="QQ登录" onclick="handleSocialLogin('qq')"><i class="fab fa-qq"></i></a>
+                                <a href="#" class="social-icon telegram" title="Telegram登录" onclick="handleSocialLogin('telegram')"><i class="fab fa-telegram"></i></a>
                             </div>
                         </div>
                     </div>
@@ -412,12 +412,12 @@
                         <div class="social-login">
                             <p>快捷注册</p>
                             <div class="social-icons">
-                                <a href="#" class="social-icon google" title="Google注册"><i class="fab fa-google"></i></a>
-                                <a href="#" class="social-icon apple" title="Apple ID注册"><i class="fab fa-apple"></i></a>
-                                <a href="#" class="social-icon github" title="GitHub注册"><i class="fab fa-github"></i></a>
-                                <a href="#" class="social-icon wechat" title="微信注册"><i class="fab fa-weixin"></i></a>
-                                <a href="#" class="social-icon qq" title="QQ注册"><i class="fab fa-qq"></i></a>
-                                <a href="#" class="social-icon telegram" title="Telegram注册"><i class="fab fa-telegram"></i></a>
+                                <a href="#" class="social-icon google" title="Google注册" onclick="handleSocialLogin('google', true)"><i class="fab fa-google"></i></a>
+                                <a href="#" class="social-icon apple" title="Apple ID注册" onclick="handleSocialLogin('apple', true)"><i class="fab fa-apple"></i></a>
+                                <a href="#" class="social-icon github" title="GitHub注册" onclick="handleSocialLogin('github', true)"><i class="fab fa-github"></i></a>
+                                <a href="#" class="social-icon wechat" title="微信注册" onclick="handleSocialLogin('wechat', true)"><i class="fab fa-weixin"></i></a>
+                                <a href="#" class="social-icon qq" title="QQ注册" onclick="handleSocialLogin('qq', true)"><i class="fab fa-qq"></i></a>
+                                <a href="#" class="social-icon telegram" title="Telegram注册" onclick="handleSocialLogin('telegram', true)"><i class="fab fa-telegram"></i></a>
                             </div>
                         </div>
                     </div>
@@ -472,9 +472,10 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
-    <script src="images.js"></script>
-    <script src="api.js"></script>
+    <script src="config.js"></script>
+<script src="script.js"></script>
+<script src="images.js"></script>
+<script src="api.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // 切换登录/注册表单
@@ -603,22 +604,111 @@
                 }
             });
             
-            // 社交登录点击事件
-            const socialIcons = document.querySelectorAll('.social-icon');
-            
-            socialIcons.forEach(icon => {
-                icon.addEventListener('click', function(e) {
-                    e.preventDefault();
+            // 社交登录处理函数
+            window.handleSocialLogin = async function(provider, isRegister = false) {
+                try {
+                    // 显示加载提示
+                    const loadingMsg = isRegister ? '正在跳转到注册页面...' : '正在跳转到登录页面...';
                     
-                    const provider = this.classList[1]; // 获取社交平台类名
+                    // 创建加载提示
+                    const loadingDiv = document.createElement('div');
+                    loadingDiv.style.cssText = `
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        background: white;
+                        padding: 20px 40px;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                        z-index: 10000;
+                        text-align: center;
+                        font-size: 16px;
+                        color: #333;
+                    `;
+                    loadingDiv.innerHTML = `
+                        <div style="margin-bottom: 15px;">
+                            <div style="border: 3px solid #f3f3f3; border-top: 3px solid #667eea; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+                        </div>
+                        <div>${loadingMsg}</div>
+                    `;
                     
-                    try {
-                        AuthAPI.socialLogin(provider);
-                    } catch (error) {
-                        alert('社交登录失败: ' + error.message);
+                    // 添加旋转动画
+                    const style = document.createElement('style');
+                    style.textContent = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
+                    document.head.appendChild(style);
+                    
+                    document.body.appendChild(loadingDiv);
+                    
+                    // 调用社交登录API
+                    const response = await AuthAPI.socialLogin(provider, isRegister);
+                    
+                    if (response.success) {
+                        // 如果返回授权URL，跳转到授权页面
+                        if (response.data.authUrl) {
+                            window.location.href = response.data.authUrl;
+                        } else {
+                            // 直接登录成功
+                            localStorage.setItem('authToken', response.data.token);
+                            localStorage.setItem('userInfo', JSON.stringify(response.data.user));
+                            
+                            alert(isRegister ? '注册成功！' : '登录成功！');
+                            window.location.href = 'index.html';
+                        }
+                    } else {
+                        throw new Error(response.message || '社交登录失败');
                     }
-                });
-            });
+                } catch (error) {
+                    console.error('社交登录错误:', error);
+                    alert(`${isRegister ? '社交注册' : '社交登录'}失败: ${error.message}`);
+                } finally {
+                    // 移除加载提示
+                    const loadingDiv = document.querySelector('div[style*="position: fixed"]');
+                    if (loadingDiv) {
+                        loadingDiv.remove();
+                    }
+                }
+            };
+            
+            // 处理社交登录回调
+            window.handleSocialCallback = function() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const code = urlParams.get('code');
+                const state = urlParams.get('state');
+                const provider = urlParams.get('provider');
+                const error = urlParams.get('error');
+                
+                if (error) {
+                    alert('社交登录失败: ' + error);
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                if (code && provider) {
+                    // 处理授权码
+                    AuthAPI.handleSocialCallback(provider, code, state)
+                        .then(response => {
+                            if (response.success) {
+                                localStorage.setItem('authToken', response.data.token);
+                                localStorage.setItem('userInfo', JSON.stringify(response.data.user));
+                                
+                                alert('登录成功！');
+                                window.location.href = 'index.html';
+                            } else {
+                                throw new Error(response.message);
+                            }
+                        })
+                        .catch(error => {
+                            alert('社交登录失败: ' + error.message);
+                            window.location.href = 'login.html';
+                        });
+                }
+            };
+            
+            // 检查是否是社交登录回调
+            if (window.location.search.includes('code=') || window.location.search.includes('error=')) {
+                handleSocialCallback();
+            }
         });
     </script>
 </body>
