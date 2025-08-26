@@ -1,9 +1,21 @@
 // 环境配置文件
 // 根据不同环境配置不同的API端点和密钥
 
+// 检测当前环境
+const detectEnvironment = () => {
+    const hostname = window.location.hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'development';
+    } else if (hostname.includes('vercel.app') || hostname.includes('staging')) {
+        return 'staging';
+    } else {
+        return 'production';
+    }
+};
+
 const CONFIG = {
     // 环境配置
-    ENVIRONMENT: 'development', // development, staging, production
+    ENVIRONMENT: detectEnvironment(),
     
     // API配置
     API: {
@@ -13,12 +25,12 @@ const CONFIG = {
             RETRY_ATTEMPTS: 3
         },
         staging: {
-            BASE_URL: 'https://api-staging.digitalplanet.com/api',
+            BASE_URL: '/api', // 使用 Vercel 代理
             TIMEOUT: 15000,
             RETRY_ATTEMPTS: 3
         },
         production: {
-            BASE_URL: 'https://api.digitalplanet.com/api',
+            BASE_URL: '/api', // 使用 Vercel 代理
             TIMEOUT: 20000,
             RETRY_ATTEMPTS: 5
         }

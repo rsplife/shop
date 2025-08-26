@@ -46,3 +46,4 @@ build/
 *.zip
 *.rar
 *.tar.gz
+.vercel
