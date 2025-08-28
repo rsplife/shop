@@ -21,7 +21,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://shop-403c62eku-reslifes-projects.vercel.app/api/$1"
+      "destination": "https://shop-p8kvstogk-reslifes-projects.vercel.app/api/$1"
     }
   ],
   "headers": [

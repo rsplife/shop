@@ -51,8 +51,8 @@
                     btnLoader.style.display = 'inline-block';
                     result.style.display = 'none';
 
-                    // 调用初始化API
-                    const response = await fetch(CONFIG.getApiUrl('/create-admin'), {
+                    // 调用初始化API (Postgres版本)
+                    const response = await fetch(CONFIG.getApiUrl('/create-admin.postgres'), {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
