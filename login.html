@@ -472,7 +472,9 @@
         </div>
     </footer>
 
-    <script src="config.js"></script>
+    <script>
+        document.write('<script src="config.js?v=' + Date.now() + '"><\/script>');
+    </script>
 <script src="script.js"></script>
 <script src="images.js"></script>
 <script src="api.js"></script>

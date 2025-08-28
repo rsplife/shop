@@ -320,7 +320,8 @@ const API_ENDPOINTS = {
             wechat: `${API_BASE_URL}/auth/wechat`,
             qq: `${API_BASE_URL}/auth/qq`,
             telegram: `${API_BASE_URL}/auth/telegram`
-        }
+        },
+        socialCallback: `${API_BASE_URL}/auth/social/callback`
     },
     
     // 用户信息相关
@@ -722,14 +723,28 @@ const AuthAPI = {
     },
     
     // 社交登录
-    async socialLogin(provider) {
+    async socialLogin(provider, isRegister = false) {
         const url = API_ENDPOINTS.auth.socialLogin[provider];
         if (!url) {
             throw new Error('不支持的登录方式');
         }
         
-        // 显示授权登录弹窗
-        this.showSocialLoginModal(provider, url);
+        // 返回授权URL，让调用方处理跳转
+        return {
+            success: true,
+            data: {
+                authUrl: url + (isRegister ? '&register=true' : '')
+            }
+        };
+    },
+    
+    // 处理社交登录回调
+    async handleSocialCallback(provider, code, state) {
+        return await apiClient.post(API_ENDPOINTS.auth.socialCallback, {
+            provider,
+            code,
+            state
+        });
     },
     
     // 显示社交登录授权弹窗

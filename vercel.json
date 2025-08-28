@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "digital-account-platform-frontend",
   "builds": [
     {
       "src": "**/*.html",
@@ -19,14 +18,10 @@
       "use": "@vercel/static"
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "https://your-backend-domain.vercel.app/api/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/api/(.*)",
+      "destination": "https://shop-403c62eku-reslifes-projects.vercel.app/api/$1"
     }
   ],
   "headers": [

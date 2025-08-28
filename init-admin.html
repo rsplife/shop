@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>初始化管理员账户 - 数字星球</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>🚀 数字星球</h1>
+                <h2>初始化管理员账户</h2>
+                <p>首次使用需要初始化管理员账户和示例商品数据</p>
+            </div>
+
+            <div class="auth-form">
+                <button id="initBtn" class="btn btn-primary btn-full">
+                    <span id="btnText">初始化系统</span>
+                    <span id="btnLoader" class="loader" style="display: none;"></span>
+                </button>
+
+                <div id="result" class="result-container" style="display: none;">
+                    <div id="resultContent"></div>
+                </div>
+
+                <div class="auth-links">
+                    <a href="login.html">返回登录页面</a>
+                    <a href="index.html">返回首页</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const initBtn = document.getElementById('initBtn');
+            const btnText = document.getElementById('btnText');
+            const btnLoader = document.getElementById('btnLoader');
+            const result = document.getElementById('result');
+            const resultContent = document.getElementById('resultContent');
+
+            initBtn.addEventListener('click', async function() {
+                try {
+                    // 显示加载状态
+                    initBtn.disabled = true;
+                    btnText.style.display = 'none';
+                    btnLoader.style.display = 'inline-block';
+                    result.style.display = 'none';
+
+                    // 调用初始化API
+                    const response = await fetch(CONFIG.getApiUrl('/create-admin'), {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({})
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        resultContent.innerHTML = `
+                            <div class="success-message">
+                                <h3>✅ 初始化成功！</h3>
+                                <div class="admin-info">
+                                    <h4>管理员账户信息：</h4>
+                                    <p><strong>用户名：</strong> ${data.admin.username}</p>
+                                    <p><strong>邮箱：</strong> ${data.admin.email}</p>
+                                    <p><strong>密码：</strong> ${data.admin.password}</p>
+                                </div>
+                                <div class="products-info">
+                                    <p><strong>示例商品：</strong> 已创建 ${data.productsCreated || 0} 个示例商品</p>
+                                </div>
+                                <div class="next-steps">
+                                    <h4>下一步：</h4>
+                                    <p>1. 使用上述账户信息登录管理后台</p>
+                                    <p>2. 修改默认密码</p>
+                                    <p>3. 开始管理您的商城</p>
+                                </div>
+                            </div>
+                        `;
+                        result.className = 'result-container success';
+                    } else {
+                        resultContent.innerHTML = `
+                            <div class="error-message">
+                                <h3>❌ 初始化失败</h3>
+                                <p><strong>错误信息：</strong> ${data.message}</p>
+                                <p>请检查网络连接或联系技术支持</p>
+                            </div>
+                        `;
+                        result.className = 'result-container error';
+                    }
+
+                } catch (error) {
+                    console.error('初始化失败:', error);
+                    resultContent.innerHTML = `
+                        <div class="error-message">
+                            <h3>❌ 网络错误</h3>
+                            <p><strong>错误信息：</strong> ${error.message}</p>
+                            <p>请检查网络连接后重试</p>
+                        </div>
+                    `;
+                    result.className = 'result-container error';
+                } finally {
+                    // 恢复按钮状态
+                    initBtn.disabled = false;
+                    btnText.style.display = 'inline-block';
+                    btnLoader.style.display = 'none';
+                    result.style.display = 'block';
+                }
+            });
+        });
+    </script>
+
+    <style>
+        .result-container {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .result-container.success {
+            background-color: #f0f9ff;
+            border-color: #10b981;
+        }
+
+        .result-container.error {
+            background-color: #fef2f2;
+            border-color: #ef4444;
+        }
+
+        .success-message h3 {
+            color: #10b981;
+            margin-bottom: 15px;
+        }
+
+        .error-message h3 {
+            color: #ef4444;
+            margin-bottom: 15px;
+        }
+
+        .admin-info, .products-info, .next-steps {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+        }
+
+        .admin-info h4, .next-steps h4 {
+            margin-bottom: 10px;
+            color: #374151;
+        }
+
+        .admin-info p, .products-info p, .next-steps p {
+            margin: 5px 0;
+            font-family: monospace;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</body>
+</html>
