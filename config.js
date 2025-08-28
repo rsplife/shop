@@ -31,12 +31,12 @@
                 RETRY_ATTEMPTS: 3
             },
             staging: {
-                BASE_URL: 'https://shop-34y5grpcm-reslifes-projects.vercel.app/api',
+                BASE_URL: 'https://shop-eqpf7ks2p-reslifes-projects.vercel.app/api',
                 TIMEOUT: 15000,
                 RETRY_ATTEMPTS: 3
             },
             production: {
-                BASE_URL: 'https://shop-34y5grpcm-reslifes-projects.vercel.app/api',
+                BASE_URL: 'https://shop-eqpf7ks2p-reslifes-projects.vercel.app/api',
                 TIMEOUT: 20000,
                 RETRY_ATTEMPTS: 5
             }
